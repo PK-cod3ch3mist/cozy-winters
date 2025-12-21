@@ -1,0 +1,21 @@
+{
+  "words": [
+    "SUSHI",
+    "BURRITO",
+    "KACHORI",
+    "KURKURE",
+    "FALAFEL",
+    "SANDWICH",
+    "POPCORN"
+  ],
+  "grid": [
+    ["S", "U", "S", "R", "R", "I"],
+    ["A", "K", "H", "U", "T", "O"],
+    ["C", "I", "B", "C", "O", "R"],
+    ["S", "H", "P", "P", "N", "E"],
+    ["A", "H", "O", "O", "U", "R"],
+    ["N", "C", "F", "R", "R", "K"],
+    ["D", "I", "A", "I", "E", "U"],
+    ["W", "L", "A", "F", "L", "K"]
+  ]
+}

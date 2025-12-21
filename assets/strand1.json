@@ -1,0 +1,21 @@
+{
+  "words": [
+    "ECHOES",
+    "DARYAGANJS",
+    "BISTRO",
+    "COLLEGE",
+    "BLUETOKAI",
+    "BUZZ",
+    "DELISH"
+  ],
+  "grid": [
+    ["C", "O", "B", "E", "D", "E"],
+    ["L", "L", "I", "L", "C", "I"],
+    ["E", "R", "S", "I", "A", "H"],
+    ["O", "G", "T", "S", "K", "O"],
+    ["B", "E", "H", "O", "E", "S"],
+    ["Z", "U", "D", "T", "S", "J"],
+    ["B", "Z", "E", "A", "A", "N"],
+    ["L", "U", "R", "Y", "A", "G"]
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "words": [
+    "KEARNEY",
+    "DONCIC",
+    "CARAMEL",
+    "MEGHALAYA",
+    "FLUTE",
+    "CHESS",
+    "OUTSIDERS"
+  ],
+  "grid": [
+    ["C", "E", "K", "E", "C", "A"],
+    ["H", "S", "E", "N", "Y", "R"],
+    ["S", "A", "R", "M", "A", "M"],
+    ["F", "L", "E", "G", "E", "C"],
+    ["L", "Y", "H", "A", "S", "I"],
+    ["U", "A", "A", "L", "R", "C"],
+    ["T", "O", "U", "I", "E", "N"],
+    ["E", "T", "S", "D", "D", "O"]
+  ]
+}

@@ -4,7 +4,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
     MODULE: DATA & CONFIGURATION
     ========================================= */
 
-// User Custom Words (Always considered valid)
+// User Custom Words (Always considered valid for Dictionary checks)
 const USER_WORDS = [
   "POSCA",
   "WASHI",
@@ -20,7 +20,7 @@ const USER_WORDS = [
   "SACHDEVA",
   "ECHOES",
   "CHILIS",
-  "DARYAGANJ",
+  "DARYAGANJS",
   "DOSACOFFEE",
   "BISTRO",
   "BUZZ",
@@ -56,25 +56,14 @@ const GAMES_CONFIG = [
     title: "Wordle: Day 1",
     target: "POSCA",
     hint: "A creative tool we know well.",
+    reward: "assets/wordle1.jpg",
   },
   {
     date: "2024-12-25",
     type: "STRANDS",
     title: "Strands: Places Together",
     theme: "Places together",
-    words: [
-      "COLLEGE",
-      "DASHI",
-      "DELISH",
-      "MALKA",
-      "SACHDEVA",
-      "ECHOES",
-      "CHILIS",
-      "DARYAGANJ",
-      "BISTRO",
-      "BUZZ",
-      "BLUETOKAI",
-    ],
+    file: "assets/strand1.json",
   },
   {
     date: "2024-12-26",
@@ -82,6 +71,7 @@ const GAMES_CONFIG = [
     title: "Wordle: Day 3",
     target: "WASHI",
     hint: "Sticky, decorative, fun.",
+    reward: "assets/wordle2.jpg",
   },
   {
     date: "2024-12-27",
@@ -97,25 +87,14 @@ const GAMES_CONFIG = [
     title: "Wordle: Day 5",
     target: "TRADE",
     hint: "Exchange of goods... or ideas?",
+    reward: "assets/wordle3.jpg",
   },
   {
     date: "2024-12-29",
     type: "STRANDS",
     title: "Strands: Yum Yum",
     theme: "Yum yum yum",
-    words: [
-      "SUSHI",
-      "KURKURE",
-      "KACHORI",
-      "PANEER",
-      "POPCORN",
-      "LATTE",
-      "FALAFEL",
-      "BURRITO",
-      "KULCHA",
-      "COOKIE",
-      "SANDWICH",
-    ],
+    file: "assets/strand2.json",
   },
   {
     date: "2024-12-30",
@@ -123,6 +102,7 @@ const GAMES_CONFIG = [
     title: "Wordle: Day 7",
     target: "SPORT",
     hint: "Physical activity and competition.",
+    reward: "assets/wordle4.jpg",
   },
   {
     date: "2024-12-31",
@@ -138,25 +118,14 @@ const GAMES_CONFIG = [
     title: "Wordle: New Year",
     target: "MODEL",
     hint: "Pose, structure, or example.",
+    reward: "assets/wordle5.jpg",
   },
   {
     date: "2025-01-02",
     type: "STRANDS",
     title: "Strands: 4:45",
     theme: "Four forty five",
-    words: [
-      "MAVERICKS",
-      "DONCIC",
-      "CHESS",
-      "MEXICAN",
-      "CARAMEL",
-      "QUIZ",
-      "KEARNEY",
-      "FLUTE",
-      "MEGHALAYA",
-      "OUTSIDERS",
-      "AASHIQTERA",
-    ],
+    file: "assets/strand3.json",
   },
   {
     date: "2025-01-03",
@@ -164,6 +133,7 @@ const GAMES_CONFIG = [
     title: "Wordle: Day 11",
     target: "CHESS",
     hint: "Strategy on 64 squares.",
+    reward: "assets/wordle6.jpg",
   },
   {
     date: "2025-01-04",
@@ -179,6 +149,7 @@ const GAMES_CONFIG = [
     title: "Wordle: Finale",
     target: "DIARY",
     hint: "Where secrets and days are kept.",
+    reward: "assets/wordle7.jpg",
   },
 ];
 
@@ -197,14 +168,12 @@ const checkWordValidity = async (word) => {
       `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
     );
     if (response.ok) {
-      // API returns an array if found, or 404 object if not
       const data = await response.json();
       return Array.isArray(data) && data.length > 0;
     }
     return false;
   } catch (error) {
     console.error("Dictionary API Error:", error);
-    // Fallback: If API fails (offline), return false to be strict/safe.
     return false;
   }
 };
@@ -362,7 +331,7 @@ const WordleKeyboard = ({ onKey, guesses, target, disabled }) => {
   );
 };
 
-const Wordle = ({ target, onComplete }) => {
+const Wordle = ({ target, reward, onComplete }) => {
   const [guesses, setGuesses] = useState([]);
   const [currentGuess, setCurrentGuess] = useState("");
   const [status, setStatus] = useState("playing");
@@ -439,11 +408,22 @@ const Wordle = ({ target, onComplete }) => {
         target={target}
         shake={shake}
       />
+
       {status === "lost" && (
         <div className="text-red-500 font-bold mb-4">
           The word was: {target}
         </div>
       )}
+
+      {status === "won" && reward && (
+        <button
+          onClick={() => window.open(reward, "_blank")}
+          className="mb-6 px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-full shadow-lg transform transition hover:scale-105 animate-bounce flex items-center gap-2"
+        >
+          <i className="fa-solid fa-gift"></i> See Reward
+        </button>
+      )}
+
       <WordleKeyboard
         onKey={handleKey}
         guesses={guesses}
@@ -455,119 +435,42 @@ const Wordle = ({ target, onComplete }) => {
 };
 
 /* =========================================
-    MODULE: STRANDS GAME
+    MODULE: STRANDS GAME (UPDATED TO FETCH ASSETS)
     ========================================= */
 
-const Strands = ({ theme, words, onComplete }) => {
-  const ROWS = 8;
-  const COLS = 6;
-  const TOTAL_CELLS = ROWS * COLS;
-
+const Strands = ({ file, theme, onComplete }) => {
   const [grid, setGrid] = useState([]);
   const [placedWords, setPlacedWords] = useState([]);
+  // Removed internal theme state, using prop instead
   const [foundWords, setFoundWords] = useState([]);
-  const [foundPaths, setFoundPaths] = useState([]); // Store arrays of {r,c} for found words
-  const [hintedWords, setHintedWords] = useState([]); // Words revealed by hint
+  const [foundPaths, setFoundPaths] = useState([]);
+  const [hintedWords, setHintedWords] = useState([]);
   const [selection, setSelection] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Grid Generation (Dense Fill Algorithm)
+  // Fetch Grid Data from Assets
   useEffect(() => {
-    const newGrid = Array(ROWS)
-      .fill(null)
-      .map(() => Array(COLS).fill(""));
-
-    // 1. Select words to fit
-    const pool = [...words].sort(() => 0.5 - Math.random());
-    const selectedWords = [];
-    let charCount = 0;
-    for (let w of pool) {
-      if (charCount + w.length <= TOTAL_CELLS) {
-        selectedWords.push(w);
-        charCount += w.length;
-      }
-    }
-    selectedWords.sort((a, b) => b.length - a.length);
-
-    // 2. Snake Placement
-    const canPlaceSnake = (word, r, c, visited) => {
-      if (word.length === 0) return true;
-      const dirs = [
-        [0, 1],
-        [1, 0],
-        [0, -1],
-        [-1, 0],
-        [1, 1],
-        [1, -1],
-        [-1, 1],
-        [-1, -1],
-      ].sort(() => 0.5 - Math.random());
-
-      for (let [dr, dc] of dirs) {
-        const nr = r + dr,
-          nc = c + dc;
-        if (
-          nr >= 0 &&
-          nr < ROWS &&
-          nc >= 0 &&
-          nc < COLS &&
-          newGrid[nr][nc] === "" &&
-          !visited.has(`${nr},${nc}`)
-        ) {
-          newGrid[nr][nc] = word[0];
-          visited.add(`${nr},${nc}`);
-          if (canPlaceSnake(word.slice(1), nr, nc, visited)) return true;
-          newGrid[nr][nc] = ""; // Backtrack
-          visited.delete(`${nr},${nc}`);
-        }
-      }
-      return false;
-    };
-
-    const placeWords = () => {
-      for (let attempt = 0; attempt < 50; attempt++) {
-        for (let r = 0; r < ROWS; r++)
-          for (let c = 0; c < COLS; c++) newGrid[r][c] = ""; // Reset
-        const placed = [];
-
-        for (let word of selectedWords) {
-          const starts = [];
-          for (let r = 0; r < ROWS; r++)
-            for (let c = 0; c < COLS; c++)
-              if (newGrid[r][c] === "") starts.push([r, c]);
-          starts.sort(() => 0.5 - Math.random());
-
-          for (let [sr, sc] of starts) {
-            newGrid[sr][sc] = word[0];
-            const visited = new Set([`${sr},${sc}`]);
-            if (canPlaceSnake(word.slice(1), sr, sc, visited)) {
-              placed.push(word);
-              break;
-            } else {
-              newGrid[sr][sc] = "";
-            }
-          }
-        }
-        if (placed.length > 0) return placed;
-      }
-      return [];
-    };
-
-    const finalPlaced = placeWords();
-
-    // 3. Fill Gaps
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for (let r = 0; r < ROWS; r++)
-      for (let c = 0; c < COLS; c++)
-        if (newGrid[r][c] === "")
-          newGrid[r][c] = alphabet[Math.floor(Math.random() * alphabet.length)];
-
-    setGrid(newGrid);
-    setPlacedWords(finalPlaced);
-    setFoundWords([]);
-    setFoundPaths([]);
-    setHintedWords([]);
-  }, [words]);
+    setLoading(true);
+    fetch(file)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load grid file");
+        return res.json();
+      })
+      .then((data) => {
+        // Expected JSON format: { "grid": [...], "words": [...] }
+        // Theme is now passed as a prop, ignoring data.theme
+        setGrid(data.grid);
+        setPlacedWords(data.words);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Could not load puzzle data.");
+        setLoading(false);
+      });
+  }, [file]);
 
   const handleStart = (r, c) => {
     setIsDragging(true);
@@ -596,7 +499,7 @@ const Strands = ({ theme, words, onComplete }) => {
       if (placedWords.includes(w) && !foundWords.includes(w)) {
         const newFound = [...foundWords, w];
         setFoundWords(newFound);
-        setFoundPaths([...foundPaths, selection]); // Store path for persistent highlight
+        setFoundPaths([...foundPaths, selection]);
         if (newFound.length === placedWords.length) onComplete();
       }
     };
@@ -610,19 +513,27 @@ const Strands = ({ theme, words, onComplete }) => {
       (w) => !foundWords.includes(w) && !hintedWords.includes(w)
     );
     if (available.length > 0) {
-      // Pick a random word from available options
       const nextHint = available[Math.floor(Math.random() * available.length)];
       setHintedWords([...hintedWords, nextHint]);
     }
   };
 
-  const getSelectionPath = () => {
-    if (selection.length < 2) return "";
+  const getPathD = (pathCoords) => {
+    if (pathCoords.length < 2) return "";
     const toPixels = (r, c) => [c * 48 + 28, r * 48 + 28]; // approx based on CSS
-    return selection
+    return pathCoords
       .map((s, i) => `${i === 0 ? "M" : "L"} ${toPixels(s.r, s.c).join(" ")}`)
       .join(" ");
   };
+
+  if (loading)
+    return (
+      <div className="text-center p-8 text-pink-500">Loading Puzzle...</div>
+    );
+  if (error) return <div className="text-center p-8 text-red-500">{error}</div>;
+
+  // Determine grid columns dynamically if grid exists, else default to 6
+  const numCols = grid.length > 0 ? grid[0].length : 6;
 
   return (
     <div
@@ -635,11 +546,14 @@ const Strands = ({ theme, words, onComplete }) => {
       </div>
 
       <div className="relative bg-gray-200 p-2 rounded-xl touch-none inline-block">
-        <div className="grid grid-cols-6 gap-2 relative z-10">
+        {/* Dynamically styled grid based on column count */}
+        <div
+          className="grid gap-2 relative z-10"
+          style={{ gridTemplateColumns: `repeat(${numCols}, minmax(0, 1fr))` }}
+        >
           {grid.map((row, r) =>
             row.map((char, c) => {
               const isSelected = selection.some((s) => s.r === r && s.c === c);
-              // Check if cell is part of any found path
               const isFound = foundPaths.some((path) =>
                 path.some((p) => p.r === r && p.c === c)
               );
@@ -649,8 +563,7 @@ const Strands = ({ theme, words, onComplete }) => {
 
               if (isSelected)
                 cls += "bg-blue-500 text-white z-20 relative scale-110";
-              else if (isFound)
-                cls += "bg-pink-300 text-white"; // Found word color
+              else if (isFound) cls += "bg-pink-300 text-white";
               else cls += "bg-white text-gray-700 hover:bg-gray-100";
 
               return (
@@ -671,7 +584,15 @@ const Strands = ({ theme, words, onComplete }) => {
           )}
         </div>
         <svg className="strands-svg">
-          <path d={getSelectionPath()} className="strands-path" />
+          {foundPaths.map((path, i) => (
+            <path
+              key={i}
+              d={getPathD(path)}
+              className="strands-path"
+              style={{ stroke: "rgba(249, 168, 212, 0.6)" }}
+            />
+          ))}
+          <path d={getPathD(selection)} className="strands-path" />
         </svg>
       </div>
 
@@ -685,13 +606,13 @@ const Strands = ({ theme, words, onComplete }) => {
         </button>
       )}
 
-      {/* Word List - Only shows Found or Hinted words */}
+      {/* Word List */}
       <div className="mt-4 flex flex-wrap gap-2 justify-center max-w-sm min-h-[40px]">
         {placedWords.map((w) => {
           const isFound = foundWords.includes(w);
           const isHinted = hintedWords.includes(w);
 
-          if (!isFound && !isHinted) return null; // Hide words by default
+          if (!isFound && !isHinted) return null;
 
           return (
             <span
@@ -908,7 +829,8 @@ function App() {
       "dailyPuzzleCompletedV2",
       JSON.stringify(newCompleted)
     );
-    setTimeout(() => setView("HOME"), 2500);
+    // Increased timeout slightly so user sees the reward button before navigating away automatically
+    setTimeout(() => setView("HOME"), 4000);
   };
 
   const unlockDev = () => {
@@ -954,13 +876,14 @@ function App() {
           {GAMES_CONFIG[activeGameIndex].type === "WORDLE" && (
             <Wordle
               target={GAMES_CONFIG[activeGameIndex].target}
+              reward={GAMES_CONFIG[activeGameIndex].reward}
               onComplete={() => handleGameComplete(activeGameIndex)}
             />
           )}
           {GAMES_CONFIG[activeGameIndex].type === "STRANDS" && (
             <Strands
+              file={GAMES_CONFIG[activeGameIndex].file}
               theme={GAMES_CONFIG[activeGameIndex].theme}
-              words={GAMES_CONFIG[activeGameIndex].words}
               onComplete={() => handleGameComplete(activeGameIndex)}
             />
           )}

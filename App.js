@@ -20,7 +20,7 @@ const USER_WORDS = [
   "SACHDEVA",
   "ECHOES",
   "CHILIS",
-  "DARYAGANJS",
+  "DARYAGANJ",
   "DOSACOFFEE",
   "BISTRO",
   "BUZZ",
@@ -477,6 +477,23 @@ const Strands = ({ file, theme, onComplete }) => {
     setSelection([{ r, c }]);
   };
 
+  const handleTouchMove = (e) => {
+    e.preventDefault(); // Prevent scrolling while playing
+    if (!isDragging) return;
+
+    const touch = e.touches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+
+    if (target) {
+      const r = target.getAttribute("data-r");
+      const c = target.getAttribute("data-c");
+
+      if (r !== null && c !== null) {
+        handleEnter(parseInt(r), parseInt(c));
+      }
+    }
+  };
+
   const handleEnter = (r, c) => {
     if (!isDragging) return;
     const last = selection[selection.length - 1];
@@ -545,7 +562,10 @@ const Strands = ({ file, theme, onComplete }) => {
         {theme}
       </div>
 
-      <div className="relative bg-gray-200 p-2 rounded-xl touch-none inline-block">
+      <div
+        className="relative bg-gray-200 p-2 rounded-xl touch-none inline-block"
+        onTouchMove={handleTouchMove}
+      >
         {/* Dynamically styled grid based on column count */}
         <div
           className="grid gap-2 relative z-10"
@@ -569,6 +589,8 @@ const Strands = ({ file, theme, onComplete }) => {
               return (
                 <div
                   key={`${r}-${c}`}
+                  data-r={r}
+                  data-c={c}
                   className={cls}
                   onMouseDown={() => handleStart(r, c)}
                   onMouseEnter={() => handleEnter(r, c)}

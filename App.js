@@ -683,7 +683,7 @@ const Strands = ({ file, theme, onComplete, initialState, onSave }) => {
               key={w}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all animate-fade-in ${
                 isFound
-                  ? "bg-ice-500 text-black border-ice-500 shadow-md"
+                  ? "bg-ice-500 text-pink border-ice-500 shadow-md"
                   : "bg-gray-100 dark:bg-slate-700 text-gray-500 border-gray-200 dark:border-slate-600 border-dashed"
               }`}
             >

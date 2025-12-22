@@ -1,10 +1,9 @@
-const { useState, useEffect, useMemo, useCallback } = React;
+const { useState, useEffect, useCallback, useRef } = React;
 
 /* =========================================
     MODULE: DATA & CONFIGURATION
     ========================================= */
 
-// User Custom Words (Always considered valid for Dictionary checks)
 const USER_WORDS = [
   "POSCA",
   "WASHI",
@@ -51,7 +50,7 @@ const USER_WORDS = [
 
 const GAMES_CONFIG = [
   {
-    date: "2024-12-24",
+    date: "2025-12-24",
     type: "WORDLE",
     title: "Wordle: Day 1",
     target: "POSCA",
@@ -59,14 +58,14 @@ const GAMES_CONFIG = [
     reward: "assets/wordle1.jpg",
   },
   {
-    date: "2024-12-25",
+    date: "2025-12-25",
     type: "STRANDS",
     title: "Strands: Places Together",
     theme: "Places together",
     file: "assets/strand1.json",
   },
   {
-    date: "2024-12-26",
+    date: "2025-12-26",
     type: "WORDLE",
     title: "Wordle: Day 3",
     target: "WASHI",
@@ -74,7 +73,7 @@ const GAMES_CONFIG = [
     reward: "assets/wordle2.jpg",
   },
   {
-    date: "2024-12-27",
+    date: "2025-12-27",
     type: "BEE",
     title: "Spelling Bee: Name Game",
     center: "A",
@@ -82,7 +81,7 @@ const GAMES_CONFIG = [
     msg: "Letters of your name (had to add a P to make it 7 letters :P)",
   },
   {
-    date: "2024-12-28",
+    date: "2025-12-28",
     type: "WORDLE",
     title: "Wordle: Day 5",
     target: "TRADE",
@@ -90,14 +89,14 @@ const GAMES_CONFIG = [
     reward: "assets/wordle3.jpg",
   },
   {
-    date: "2024-12-29",
+    date: "2025-12-29",
     type: "STRANDS",
     title: "Strands: Yum Yum",
     theme: "Yum yum yum",
     file: "assets/strand2.json",
   },
   {
-    date: "2024-12-30",
+    date: "2025-12-30",
     type: "WORDLE",
     title: "Wordle: Day 7",
     target: "SPORT",
@@ -105,7 +104,7 @@ const GAMES_CONFIG = [
     reward: "assets/wordle4.jpg",
   },
   {
-    date: "2024-12-31",
+    date: "2025-12-31",
     type: "BEE",
     title: "Spelling Bee: My Turn",
     center: "T",
@@ -113,7 +112,7 @@ const GAMES_CONFIG = [
     msg: "Letters of mine (if someone butchered the pronunciation XD)",
   },
   {
-    date: "2025-01-01",
+    date: "2026-01-01",
     type: "WORDLE",
     title: "Wordle: New Year",
     target: "MODEL",
@@ -121,14 +120,14 @@ const GAMES_CONFIG = [
     reward: "assets/wordle5.jpg",
   },
   {
-    date: "2025-01-02",
+    date: "2026-01-02",
     type: "STRANDS",
     title: "Strands: 4:45",
     theme: "Four forty five",
     file: "assets/strand3.json",
   },
   {
-    date: "2025-01-03",
+    date: "2026-01-03",
     type: "WORDLE",
     title: "Wordle: Day 11",
     target: "CHESS",
@@ -136,7 +135,7 @@ const GAMES_CONFIG = [
     reward: "assets/wordle6.jpg",
   },
   {
-    date: "2025-01-04",
+    date: "2026-01-04",
     type: "BEE",
     title: "Spelling Bee: Hoops",
     center: "E",
@@ -144,7 +143,7 @@ const GAMES_CONFIG = [
     msg: "Can you score more than an NBA game?",
   },
   {
-    date: "2025-01-05",
+    date: "2026-01-05",
     type: "WORDLE",
     title: "Wordle: Finale",
     target: "DIARY",
@@ -157,12 +156,8 @@ const GAMES_CONFIG = [
     MODULE: UTILS
     ========================================= */
 
-// Helper to check validity using User Words first, then API
 const checkWordValidity = async (word) => {
-  // 1. Check Custom List Sync
   if (USER_WORDS.includes(word)) return true;
-
-  // 2. Check API
   try {
     const response = await fetch(
       `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
@@ -173,7 +168,6 @@ const checkWordValidity = async (word) => {
     }
     return false;
   } catch (error) {
-    console.error("Dictionary API Error:", error);
     return false;
   }
 };
@@ -183,47 +177,70 @@ const fireConfetti = () => {
     particleCount: 150,
     spread: 70,
     origin: { y: 0.6 },
-    colors: ["#F472B6", "#60A5FA", "#34D399"],
+    colors: ["#F43F5E", "#7DD3FC", "#FCD34D"],
   });
 };
 
-const isLocked = (date, devMode) => {
-  if (devMode) return false;
-  return new Date(date).setHours(0, 0, 0, 0) > new Date().setHours(0, 0, 0, 0);
+// Returns true if game is locked (future date) AND not in dev mode
+const isLocked = (dateStr) => {
+  // 1. Check Dev Mode in URL
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("dev") === "true") return false;
+
+  // 2. Check Date (Robust Local Time Comparison)
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const gameDate = new Date(y, m - 1, d).setHours(0, 0, 0, 0); // Local midnight of config date
+  const today = new Date().setHours(0, 0, 0, 0); // Local midnight of today
+
+  return gameDate > today;
 };
 
 /* =========================================
     MODULE: SHARED COMPONENTS
     ========================================= */
 
-const Header = ({ onTitleClick, view, setView }) => (
-  <header className="bg-white/80 backdrop-blur-sm sticky top-0 z-30 mb-6 border-b border-pink-100">
-    <div className="px-4 py-4 flex justify-between items-center">
+const Header = ({ view, setView, darkMode, toggleDarkMode }) => (
+  <header className="sticky top-0 z-40 backdrop-blur-md bg-white/70 dark:bg-slate-900/80 border-b border-cozy-100 dark:border-slate-700 transition-colors">
+    <div className="max-w-md mx-auto px-4 h-16 flex justify-between items-center">
       <h1
-        onClick={onTitleClick}
-        className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 cursor-pointer"
+        onClick={() => setView("HOME")}
+        className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cozy-500 to-purple-500 cursor-pointer tracking-tight"
       >
-        The Daily Puzzle
+        Daily Puzzle
       </h1>
-      {view === "GAME" && (
+      <div className="flex items-center gap-3">
         <button
-          onClick={() => setView("HOME")}
-          className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200"
+          onClick={toggleDarkMode}
+          className="w-10 h-10 rounded-full flex items-center justify-center bg-ice-100 dark:bg-slate-800 text-ice-800 dark:text-yellow-400 transition-colors"
         >
-          <i className="fa-solid fa-xmark text-gray-500"></i>
+          {darkMode ? (
+            <i className="fa-solid fa-sun"></i>
+          ) : (
+            <i className="fa-solid fa-moon"></i>
+          )}
         </button>
-      )}
+        {view === "GAME" && (
+          <button
+            onClick={() => setView("HOME")}
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors"
+          >
+            <i className="fa-solid fa-xmark text-gray-500 dark:text-white"></i>
+          </button>
+        )}
+      </div>
     </div>
   </header>
 );
 
 const GameShell = ({ title, hint, children }) => (
-  <div className="px-2">
-    <h2 className="text-center text-xl font-bold text-gray-800 mb-1">
+  <div className="px-4 py-6 max-w-md mx-auto animate-fade-in">
+    <h2 className="text-center text-2xl font-bold text-slate-800 dark:text-white mb-2">
       {title}
     </h2>
     {hint && (
-      <p className="text-center text-xs text-gray-500 italic mb-6">{hint}</p>
+      <p className="text-center text-sm text-slate-500 dark:text-slate-400 italic mb-8 bg-white/50 dark:bg-slate-800/50 py-2 rounded-lg">
+        {hint}
+      </p>
     )}
     {children}
   </div>
@@ -235,12 +252,12 @@ const GameShell = ({ title, hint, children }) => (
 
 const WordleGrid = ({ guesses, currentGuess, target, shake }) => (
   <div
-    className={`grid grid-rows-6 gap-2 mb-6 ${
+    className={`flex flex-col items-center gap-2 mb-8 ${
       shake ? "animate-[shake_0.5s]" : ""
     }`}
   >
     {[...Array(6)].map((_, i) => (
-      <div key={i} className="grid grid-cols-5 gap-2">
+      <div key={i} className="flex gap-2">
         {[...Array(5)].map((_, j) => {
           const guess = guesses[i];
           const isCurrent = i === guesses.length;
@@ -250,19 +267,27 @@ const WordleGrid = ({ guesses, currentGuess, target, shake }) => (
             ? currentGuess[j]
             : "";
 
-          let colorClass = "border-2 border-pink-200 bg-white";
+          let style =
+            "border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white";
+
           if (guess) {
             if (guess[j] === target[j])
-              colorClass = "bg-green-500 border-green-500 text-white";
+              style = "bg-green-500 border-green-500 text-white";
             else if (target.includes(guess[j]))
-              colorClass = "bg-yellow-500 border-yellow-500 text-white";
-            else colorClass = "bg-gray-400 border-gray-400 text-white";
+              style = "bg-yellow-500 border-yellow-500 text-white";
+            else
+              style =
+                "bg-gray-400 border-gray-400 text-white dark:bg-slate-600 dark:border-slate-600";
+          } else if (letter) {
+            // Active typing: Darker border for visibility
+            style =
+              "border-gray-500 dark:border-gray-400 text-slate-800 dark:text-white bg-white dark:bg-slate-800";
           }
 
           return (
             <div
               key={j}
-              className={`w-12 h-12 flex items-center justify-center text-xl font-bold rounded ${colorClass} uppercase transition-all duration-300`}
+              className={`w-14 h-14 flex items-center justify-center text-3xl font-bold uppercase select-none transition-colors duration-100 ${style}`}
             >
               {letter}
             </div>
@@ -275,16 +300,17 @@ const WordleGrid = ({ guesses, currentGuess, target, shake }) => (
 
 const WordleKeyboard = ({ onKey, guesses, target, disabled }) => {
   const getKeyColor = (char) => {
-    let color = "bg-white shadow-sm";
+    let color =
+      "bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 shadow-sm border-b-2 border-slate-200 dark:border-slate-900";
     for (let g of guesses) {
       if (g.includes(char)) {
-        color = "bg-gray-400 text-white";
+        color = "bg-slate-400 dark:bg-slate-600 text-white border-slate-500";
         for (let i = 0; i < 5; i++) {
           if (g[i] === char && target[i] === char)
-            return "bg-green-500 text-white";
+            return "bg-green-500 text-white border-green-600";
         }
-        if (target.includes(char) && color !== "bg-green-500 text-white")
-          color = "bg-yellow-500 text-white";
+        if (target.includes(char) && !color.includes("green"))
+          color = "bg-yellow-400 text-white border-yellow-500";
       }
     }
     return color;
@@ -292,19 +318,19 @@ const WordleKeyboard = ({ onKey, guesses, target, disabled }) => {
 
   return (
     <div
-      className={`flex flex-col gap-1 w-full max-w-sm px-2 ${
+      className={`flex flex-col gap-2 w-full px-1 ${
         disabled ? "opacity-50 pointer-events-none" : ""
       }`}
     >
       {["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"].map((row, i) => (
-        <div key={i} className="flex justify-center gap-1">
+        <div key={i} className="flex justify-center gap-1.5">
           {row.split("").map((char) => (
             <button
               key={char}
               onClick={() => onKey(char)}
-              className={`h-10 flex-1 rounded text-sm font-bold ${getKeyColor(
+              className={`h-12 flex-1 rounded-md text-sm font-bold transition-all active:scale-95 ${getKeyColor(
                 char
-              )} transition-colors`}
+              )}`}
             >
               {char}
             </button>
@@ -313,15 +339,15 @@ const WordleKeyboard = ({ onKey, guesses, target, disabled }) => {
             <>
               <button
                 onClick={() => onKey("BACKSPACE")}
-                className="px-3 bg-pink-100 rounded text-xs ml-1"
+                className="px-4 h-12 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-300 rounded-md text-lg ml-1"
               >
-                ⌫
+                <i className="fa-solid fa-delete-left"></i>
               </button>
               <button
                 onClick={() => onKey("ENTER")}
-                className="px-3 bg-green-100 rounded text-xs ml-1"
+                className="px-4 h-12 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-300 rounded-md text-xs font-bold ml-1"
               >
-                ↵
+                ENT
               </button>
             </>
           )}
@@ -331,13 +357,18 @@ const WordleKeyboard = ({ onKey, guesses, target, disabled }) => {
   );
 };
 
-const Wordle = ({ target, reward, onComplete }) => {
-  const [guesses, setGuesses] = useState([]);
+const Wordle = ({ target, reward, onComplete, initialState, onSave }) => {
+  const [guesses, setGuesses] = useState(initialState?.guesses || []);
   const [currentGuess, setCurrentGuess] = useState("");
-  const [status, setStatus] = useState("playing");
+  const [status, setStatus] = useState(initialState?.status || "playing");
   const [shake, setShake] = useState(false);
   const [msg, setMsg] = useState("");
   const [isValidating, setIsValidating] = useState(false);
+
+  // Save state on every relevant change
+  useEffect(() => {
+    onSave({ guesses, status });
+  }, [guesses, status]);
 
   const handleKey = useCallback(
     async (key) => {
@@ -374,7 +405,7 @@ const Wordle = ({ target, reward, onComplete }) => {
   const showMessage = (text) => {
     setMsg(text);
     setShake(true);
-    setTimeout(() => setMsg(""), 1000);
+    setTimeout(() => setMsg(""), 2000);
     setTimeout(() => setShake(false), 500);
   };
 
@@ -390,18 +421,19 @@ const Wordle = ({ target, reward, onComplete }) => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative mb-2 h-8">
+      <div className="h-8 mb-2 w-full flex justify-center">
         {msg && (
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-3 py-1 rounded text-sm whitespace-nowrap z-10">
+          <div className="bg-slate-800 text-white px-4 py-1 rounded-full text-sm animate-bounce shadow-lg z-50">
             {msg}
           </div>
         )}
         {isValidating && (
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-pink-100 text-pink-600 px-3 py-1 rounded text-sm whitespace-nowrap z-10 animate-pulse">
-            Checking...
+          <div className="text-cozy-500 font-bold animate-pulse text-sm">
+            checking...
           </div>
         )}
       </div>
+
       <WordleGrid
         guesses={guesses}
         currentGuess={currentGuess}
@@ -410,17 +442,17 @@ const Wordle = ({ target, reward, onComplete }) => {
       />
 
       {status === "lost" && (
-        <div className="text-red-500 font-bold mb-4">
-          The word was: {target}
+        <div className="text-red-500 font-bold mb-6 bg-red-50 px-4 py-2 rounded-lg">
+          Word: {target}
         </div>
       )}
 
       {status === "won" && reward && (
         <button
           onClick={() => window.open(reward, "_blank")}
-          className="mb-6 px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-full shadow-lg transform transition hover:scale-105 animate-bounce flex items-center gap-2"
+          className="mb-8 px-8 py-3 bg-gradient-to-r from-cozy-500 to-purple-500 text-white font-bold rounded-full shadow-lg shadow-cozy-200 transform transition hover:scale-105 active:scale-95 animate-float flex items-center gap-2"
         >
-          <i className="fa-solid fa-gift"></i> See Reward
+          <i className="fa-solid fa-gift text-xl"></i> See Reward
         </button>
       )}
 
@@ -428,46 +460,44 @@ const Wordle = ({ target, reward, onComplete }) => {
         onKey={handleKey}
         guesses={guesses}
         target={target}
-        disabled={isValidating}
+        disabled={isValidating || status !== "playing"}
       />
     </div>
   );
 };
 
 /* =========================================
-    MODULE: STRANDS GAME (UPDATED TO FETCH ASSETS)
+    MODULE: STRANDS GAME
     ========================================= */
 
-const Strands = ({ file, theme, onComplete }) => {
+const Strands = ({ file, theme, onComplete, initialState, onSave }) => {
   const [grid, setGrid] = useState([]);
   const [placedWords, setPlacedWords] = useState([]);
-  // Removed internal theme state, using prop instead
-  const [foundWords, setFoundWords] = useState([]);
-  const [foundPaths, setFoundPaths] = useState([]);
-  const [hintedWords, setHintedWords] = useState([]);
+  const [foundWords, setFoundWords] = useState(initialState?.foundWords || []);
+  const [foundPaths, setFoundPaths] = useState(initialState?.foundPaths || []);
+  const [hintedWords, setHintedWords] = useState(
+    initialState?.hintedWords || []
+  );
   const [selection, setSelection] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  // Fetch Grid Data from Assets
+  // Save state
+  useEffect(() => {
+    if (!loading) onSave({ foundWords, foundPaths, hintedWords });
+  }, [foundWords, foundPaths, hintedWords, loading]);
+
   useEffect(() => {
     setLoading(true);
     fetch(file)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to load grid file");
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
-        // Expected JSON format: { "grid": [...], "words": [...] }
-        // Theme is now passed as a prop, ignoring data.theme
         setGrid(data.grid);
         setPlacedWords(data.words);
         setLoading(false);
       })
       .catch((err) => {
         console.error(err);
-        setError("Could not load puzzle data.");
         setLoading(false);
       });
   }, [file]);
@@ -478,19 +508,14 @@ const Strands = ({ file, theme, onComplete }) => {
   };
 
   const handleTouchMove = (e) => {
-    e.preventDefault(); // Prevent scrolling while playing
+    e.preventDefault();
     if (!isDragging) return;
-
     const touch = e.touches[0];
     const target = document.elementFromPoint(touch.clientX, touch.clientY);
-
     if (target) {
       const r = target.getAttribute("data-r");
       const c = target.getAttribute("data-c");
-
-      if (r !== null && c !== null) {
-        handleEnter(parseInt(r), parseInt(c));
-      }
+      if (r && c) handleEnter(parseInt(r), parseInt(c));
     }
   };
 
@@ -499,7 +524,6 @@ const Strands = ({ file, theme, onComplete }) => {
     const last = selection[selection.length - 1];
     const isAdjacent = Math.abs(last.r - r) <= 1 && Math.abs(last.c - c) <= 1;
     const indexInSel = selection.findIndex((s) => s.r === r && s.c === c);
-
     if (isAdjacent) {
       if (indexInSel === -1) setSelection([...selection, { r, c }]);
       else if (indexInSel === selection.length - 2)
@@ -511,7 +535,6 @@ const Strands = ({ file, theme, onComplete }) => {
     setIsDragging(false);
     const word = selection.map((s) => grid[s.r][s.c]).join("");
     const revWord = word.split("").reverse().join("");
-
     const check = (w) => {
       if (placedWords.includes(w) && !foundWords.includes(w)) {
         const newFound = [...foundWords, w];
@@ -530,26 +553,40 @@ const Strands = ({ file, theme, onComplete }) => {
       (w) => !foundWords.includes(w) && !hintedWords.includes(w)
     );
     if (available.length > 0) {
-      const nextHint = available[Math.floor(Math.random() * available.length)];
-      setHintedWords([...hintedWords, nextHint]);
+      setHintedWords([
+        ...hintedWords,
+        available[Math.floor(Math.random() * available.length)],
+      ]);
     }
   };
 
   const getPathD = (pathCoords) => {
-    if (pathCoords.length < 2) return "";
-    const toPixels = (r, c) => [c * 48 + 28, r * 48 + 28]; // approx based on CSS
+    if (pathCoords.length < 2 || grid.length === 0) return "";
+    const numRows = grid.length;
+    const numCols = grid[0].length;
+
+    // Convert logic coordinates to percentages (0-100)
+    // Center of a cell at (r,c) is ((c + 0.5)/cols * 100, (r + 0.5)/rows * 100)
+    const toPercent = (r, c) => [
+      ((c + 0.5) / numCols) * 100,
+      ((r + 0.5) / numRows) * 100,
+    ];
+
     return pathCoords
-      .map((s, i) => `${i === 0 ? "M" : "L"} ${toPixels(s.r, s.c).join(" ")}`)
+      .map((s, i) => {
+        const [x, y] = toPercent(s.r, s.c);
+        return `${i === 0 ? "M" : "L"} ${x} ${y}`;
+      })
       .join(" ");
   };
 
   if (loading)
     return (
-      <div className="text-center p-8 text-pink-500">Loading Puzzle...</div>
+      <div className="text-center p-8 text-cozy-400 animate-pulse">
+        Building Puzzle...
+      </div>
     );
-  if (error) return <div className="text-center p-8 text-red-500">{error}</div>;
 
-  // Determine grid columns dynamically if grid exists, else default to 6
   const numCols = grid.length > 0 ? grid[0].length : 6;
 
   return (
@@ -558,15 +595,40 @@ const Strands = ({ file, theme, onComplete }) => {
       onMouseUp={handleEnd}
       onTouchEnd={handleEnd}
     >
-      <div className="bg-white px-4 py-2 rounded-full mb-4 shadow-sm text-sm font-bold text-pink-500 uppercase tracking-wider">
-        {theme}
+      <div className="bg-white dark:bg-slate-800 px-6 py-2 rounded-full mb-6 shadow-sm border border-cozy-100 dark:border-slate-700">
+        <span className="text-sm font-bold text-cozy-500 uppercase tracking-wider">
+          {theme}
+        </span>
       </div>
 
       <div
-        className="relative bg-gray-200 p-2 rounded-xl touch-none inline-block"
+        className="relative bg-white dark:bg-slate-800 p-3 rounded-2xl shadow-inner border-4 border-ice-100 dark:border-slate-700 touch-none"
         onTouchMove={handleTouchMove}
       >
-        {/* Dynamically styled grid based on column count */}
+        {/* SVG Overlay for Lines */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none z-20"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          {foundPaths.map((path, i) => (
+            <path
+              key={i}
+              d={getPathD(path)}
+              stroke="rgba(186, 230, 253, 0.6)"
+              strokeWidth="1.5"
+              fill="none"
+              className="dark:stroke-slate-600"
+            />
+          ))}
+          <path
+            d={getPathD(selection)}
+            stroke="rgba(244, 63, 94, 0.5)"
+            strokeWidth="1.5"
+            fill="none"
+          />
+        </svg>
+
         <div
           className="grid gap-2 relative z-10"
           style={{ gridTemplateColumns: `repeat(${numCols}, minmax(0, 1fr))` }}
@@ -577,14 +639,18 @@ const Strands = ({ file, theme, onComplete }) => {
               const isFound = foundPaths.some((path) =>
                 path.some((p) => p.r === r && p.c === c)
               );
-
               let cls =
-                "w-10 h-10 flex items-center justify-center font-bold text-lg rounded-full select-none cursor-pointer transition-colors duration-150 ";
+                "w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center font-bold text-lg sm:text-xl rounded-full select-none cursor-pointer transition-all duration-200 ";
 
               if (isSelected)
-                cls += "bg-blue-500 text-white z-20 relative scale-110";
-              else if (isFound) cls += "bg-pink-300 text-white";
-              else cls += "bg-white text-gray-700 hover:bg-gray-100";
+                cls +=
+                  "bg-cozy-500 text-white scale-110 shadow-lg ring-2 ring-cozy-200";
+              else if (isFound)
+                cls +=
+                  "bg-ice-200 dark:bg-ice-800 text-ice-800 dark:text-ice-200";
+              else
+                cls +=
+                  "bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-600";
 
               return (
                 <div
@@ -605,44 +671,20 @@ const Strands = ({ file, theme, onComplete }) => {
             })
           )}
         </div>
-        <svg className="strands-svg">
-          {foundPaths.map((path, i) => (
-            <path
-              key={i}
-              d={getPathD(path)}
-              className="strands-path"
-              style={{ stroke: "rgba(249, 168, 212, 0.6)" }}
-            />
-          ))}
-          <path d={getPathD(selection)} className="strands-path" />
-        </svg>
       </div>
 
-      {/* Hint Button */}
-      {foundWords.length < placedWords.length && (
-        <button
-          onClick={handleHint}
-          className="mt-4 px-4 py-1 text-xs font-bold text-pink-500 bg-pink-50 hover:bg-pink-100 rounded-full border border-pink-200 transition-colors"
-        >
-          Need a hint? ({placedWords.length - foundWords.length} left)
-        </button>
-      )}
-
-      {/* Word List */}
-      <div className="mt-4 flex flex-wrap gap-2 justify-center max-w-sm min-h-[40px]">
+      <div className="mt-6 flex flex-wrap gap-2 justify-center max-w-sm">
         {placedWords.map((w) => {
           const isFound = foundWords.includes(w);
           const isHinted = hintedWords.includes(w);
-
           if (!isFound && !isHinted) return null;
-
           return (
             <span
               key={w}
-              className={`px-2 py-1 rounded text-xs font-bold border transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all animate-fade-in ${
                 isFound
-                  ? "bg-blue-500 text-white border-blue-500"
-                  : "bg-gray-100 text-gray-600 border-gray-300"
+                  ? "bg-ice-500 text-black border-ice-500 shadow-md"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-500 border-gray-200 dark:border-slate-600 border-dashed"
               }`}
             >
               {w}
@@ -650,6 +692,15 @@ const Strands = ({ file, theme, onComplete }) => {
           );
         })}
       </div>
+
+      {foundWords.length < placedWords.length && (
+        <button
+          onClick={handleHint}
+          className="mt-8 text-xs font-bold text-cozy-400 hover:text-cozy-600 underline decoration-dashed underline-offset-4"
+        >
+          Need a hint? ({placedWords.length - foundWords.length} remaining)
+        </button>
+      )}
     </div>
   );
 };
@@ -660,17 +711,17 @@ const Strands = ({ file, theme, onComplete }) => {
 
 const Hive = ({ center, letters, onLetterClick }) => {
   const positions = [
-    { x: 0, y: -85 },
-    { x: 75, y: -42 },
-    { x: 75, y: 42 },
-    { x: 0, y: 85 },
-    { x: -75, y: 42 },
-    { x: -75, y: -42 },
+    { x: 0, y: -82 },
+    { x: 72, y: -41 },
+    { x: 72, y: 41 },
+    { x: 0, y: 82 },
+    { x: -72, y: 41 },
+    { x: -72, y: -41 },
   ];
   return (
-    <div className="relative w-64 h-64 flex items-center justify-center mb-6 scale-90">
+    <div className="relative w-64 h-64 flex items-center justify-center mb-8 mt-4">
       <div className="absolute z-10" onClick={() => onLetterClick(center)}>
-        <div className="hex-btn center-letter">{center}</div>
+        <div className="hex-btn center-letter shadow-lg">{center}</div>
       </div>
       {letters.map((l, i) => (
         <div
@@ -681,25 +732,34 @@ const Hive = ({ center, letters, onLetterClick }) => {
           }}
           onClick={() => onLetterClick(l)}
         >
-          <div className="hex-btn shadow-sm">{l}</div>
+          <div className="hex-btn">{l}</div>
         </div>
       ))}
     </div>
   );
 };
 
-const SpellingBee = ({ center, letters, msg, onComplete }) => {
+const SpellingBee = ({
+  center,
+  letters,
+  msg,
+  onComplete,
+  initialState,
+  onSave,
+}) => {
   const [input, setInput] = useState("");
-  const [found, setFound] = useState([]);
-  const [score, setScore] = useState(0);
+  const [found, setFound] = useState(initialState?.found || []);
+  const [score, setScore] = useState(initialState?.score || 0);
   const [error, setError] = useState("");
   const [isValidating, setIsValidating] = useState(false);
-
   const allLetters = [center, ...letters];
+
+  useEffect(() => {
+    onSave({ found, score });
+  }, [found, score]);
 
   const handleSubmit = async () => {
     if (isValidating) return;
-
     const word = input.toUpperCase();
     if (word.length < 4) return showError("Too short!");
     if (!word.includes(center)) return showError("Missing center letter");
@@ -719,8 +779,7 @@ const SpellingBee = ({ center, letters, msg, onComplete }) => {
     const newScore = score + pts + (isPangram ? 7 : 0);
     setScore(newScore);
     setInput("");
-
-    if (newScore > 15) onComplete();
+    if (newScore > 15 && score <= 15) onComplete();
   };
 
   const showError = (txt) => {
@@ -730,23 +789,18 @@ const SpellingBee = ({ center, letters, msg, onComplete }) => {
 
   return (
     <div className="flex flex-col items-center">
-      <p className="text-center text-pink-600 font-medium mb-4 italic px-4 text-sm">
-        {msg}
-      </p>
-      <div className="h-12 flex items-center text-3xl font-bold text-gray-800 uppercase tracking-widest mb-6 border-b-2 border-pink-200 min-w-[200px] justify-center relative">
-        {input}
-        <span className="absolute animate-pulse text-gray-300 right-0">|</span>
-      </div>
-
-      <div className="absolute top-48 z-50 flex flex-col items-center gap-1">
+      <div className="h-16 flex items-center justify-center w-full relative mb-4">
+        <span
+          className={`text-3xl font-black tracking-widest uppercase border-b-2 border-cozy-200 dark:border-slate-600 pb-1 min-w-[200px] text-center ${
+            input ? "text-slate-800 dark:text-white" : "text-gray-300"
+          }`}
+        >
+          {input || <span className="opacity-0">_</span>}
+          <span className="animate-pulse text-cozy-400">|</span>
+        </span>
         {error && (
-          <div className="bg-gray-800 text-white px-3 py-1 rounded text-sm pop-in">
+          <div className="absolute -top-8 bg-slate-800 text-white px-3 py-1 rounded text-xs animate-bounce whitespace-nowrap">
             {error}
-          </div>
-        )}
-        {isValidating && (
-          <div className="bg-pink-100 text-pink-600 px-3 py-1 rounded text-sm animate-pulse shadow-sm border border-pink-200">
-            Checking...
           </div>
         )}
       </div>
@@ -757,44 +811,46 @@ const SpellingBee = ({ center, letters, msg, onComplete }) => {
         onLetterClick={(l) => !isValidating && setInput((prev) => prev + l)}
       />
 
-      <div className="flex gap-3 mb-6">
+      <div className="flex gap-4 mb-8">
+        <button
+          onClick={() => setInput((prev) => prev.slice(0, -1))}
+          className="w-14 h-14 rounded-full border-2 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all"
+        >
+          <i className="fa-solid fa-delete-left"></i>
+        </button>
         <button
           onClick={() => setInput("")}
-          className="px-5 py-2 rounded-full border border-gray-300 text-gray-600 font-bold text-sm hover:bg-gray-50 disabled:opacity-50"
-          disabled={isValidating}
+          className="w-14 h-14 rounded-full border-2 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all"
         >
-          Clear
+          <i className="fa-solid fa-rotate-left"></i>
         </button>
         <button
           onClick={handleSubmit}
-          className="px-5 py-2 rounded-full bg-pink-500 text-white font-bold shadow-lg text-sm hover:bg-pink-600 disabled:opacity-50"
-          disabled={isValidating}
+          className="px-8 h-14 rounded-full bg-cozy-500 hover:bg-cozy-600 text-white font-bold text-lg shadow-lg shadow-cozy-200 active:scale-95 transition-all flex items-center gap-2"
         >
           Enter
         </button>
-        <button
-          onClick={() => setInput((prev) => prev.slice(0, -1))}
-          className="px-5 py-2 rounded-full border border-gray-300 text-gray-600 font-bold text-sm hover:bg-gray-50 disabled:opacity-50"
-          disabled={isValidating}
-        >
-          Delete
-        </button>
       </div>
 
-      <div className="w-full max-w-md bg-white rounded-lg p-4 shadow-sm">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-xs text-gray-400 font-bold uppercase">
-            Words: {found.length}
+      <div className="w-full bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-ice-100 dark:border-slate-700">
+        <div className="flex justify-between items-center mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
+          <span className="text-xs font-bold uppercase text-gray-400 tracking-wider">
+            Words found: {found.length}
           </span>
-          <span className="text-xs text-pink-500 font-bold uppercase">
-            Score: {score}/15
+          <span className="text-sm font-black text-cozy-500 bg-cozy-50 dark:bg-slate-900 px-3 py-1 rounded-full">
+            {score} pts
           </span>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+          {found.length === 0 && (
+            <span className="text-gray-300 text-sm italic w-full text-center">
+              Start typing...
+            </span>
+          )}
           {found.map((f) => (
             <span
               key={f}
-              className="text-gray-700 text-sm border-b border-gray-100"
+              className="text-slate-600 dark:text-slate-300 text-sm px-2 py-1 bg-gray-50 dark:bg-slate-700 rounded"
             >
               {f}
             </span>
@@ -812,77 +868,113 @@ const SpellingBee = ({ center, letters, msg, onComplete }) => {
 const GameCard = ({ game, index, locked, completed, onClick }) => (
   <div
     onClick={onClick}
-    className={`relative p-4 rounded-xl border-2 transition-all flex items-center justify-between
-        ${
-          locked
-            ? "bg-gray-50 border-gray-100 opacity-60"
-            : "bg-white border-white shadow-sm hover:shadow-md cursor-pointer"
-        }
-        ${completed ? "border-green-200 bg-green-50/50" : ""}`}
+    className={`relative p-5 rounded-2xl border transition-all duration-300 group ${
+      locked
+        ? "bg-slate-100 dark:bg-slate-800/50 border-transparent opacity-60 cursor-not-allowed"
+        : "bg-white dark:bg-slate-800 border-white dark:border-slate-700 shadow-sm hover:shadow-lg hover:-translate-y-1 cursor-pointer"
+    } ${
+      completed
+        ? "ring-2 ring-green-200 dark:ring-green-900 bg-green-50/30"
+        : ""
+    }`}
   >
-    <div>
-      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">
+    <div className="flex justify-between items-center mb-2">
+      <span
+        className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${
+          locked
+            ? "bg-gray-200 text-gray-400"
+            : "bg-ice-100 dark:bg-slate-700 text-ice-700 dark:text-ice-300"
+        }`}
+      >
         {new Date(game.date).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
         })}
-      </div>
-      <div className="font-bold text-gray-700">{game.title.split(":")[0]}</div>
+      </span>
+      {completed && (
+        <i className="fa-solid fa-circle-check text-green-500 text-lg"></i>
+      )}
+      {locked && <i className="fa-solid fa-lock text-slate-300"></i>}
     </div>
-    <div className="text-xl">{locked ? "🔒" : completed ? "✅" : "👉"}</div>
+
+    <h3
+      className={`text-lg font-bold ${
+        locked
+          ? "text-slate-400"
+          : "text-slate-700 dark:text-slate-200 group-hover:text-cozy-600 dark:group-hover:text-cozy-400 transition-colors"
+      }`}
+    >
+      {game.title.split(":")[0]}
+    </h3>
+    <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-1">
+      {game.title.split(":")[1]}
+    </p>
   </div>
 );
 
 function App() {
   const [view, setView] = useState("HOME");
   const [activeGameIndex, setActiveGameIndex] = useState(null);
-  const [completedGames, setCompletedGames] = useState(() => {
-    const saved = localStorage.getItem("dailyPuzzleCompletedV2");
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [devMode, setDevMode] = useState(false);
-  const [clicks, setClicks] = useState(0);
+
+  // -- Dark Mode --
+  const [darkMode, setDarkMode] = useState(
+    () => localStorage.getItem("theme") === "dark"
+  );
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
+
+  // -- Game Progress Persistence --
+  const [progress, setProgress] = useState(
+    () => JSON.parse(localStorage.getItem("puzzleProgressV3")) || {}
+  );
+
+  const saveGameProgress = (index, data) => {
+    const newProgress = {
+      ...progress,
+      [index]: { ...(progress[index] || {}), ...data },
+    };
+    setProgress(newProgress);
+    localStorage.setItem("puzzleProgressV3", JSON.stringify(newProgress));
+  };
 
   const handleGameComplete = (index) => {
     fireConfetti();
-    const newCompleted = [...completedGames, index];
-    setCompletedGames(newCompleted);
-    localStorage.setItem(
-      "dailyPuzzleCompletedV2",
-      JSON.stringify(newCompleted)
-    );
-    // Increased timeout slightly so user sees the reward button before navigating away automatically
-    setTimeout(() => setView("HOME"), 4000);
-  };
-
-  const unlockDev = () => {
-    if (devMode) return;
-    const n = clicks + 1;
-    setClicks(n);
-    if (n >= 5) {
-      setDevMode(true);
-      alert("Dev Mode Unlocked");
-    }
+    saveGameProgress(index, { completed: true });
   };
 
   return (
-    <div className="min-h-screen pb-10 max-w-md mx-auto">
-      <Header onTitleClick={unlockDev} view={view} setView={setView} />
+    <div className="min-h-screen pb-12 font-sans winter-bg">
+      <Header
+        view={view}
+        setView={setView}
+        darkMode={darkMode}
+        toggleDarkMode={() => setDarkMode(!darkMode)}
+      />
 
       {view === "HOME" ? (
-        <div className="px-4 space-y-3 animate-fade-in">
-          <div className="text-center mb-6">
-            <p className="text-gray-500 text-sm">Dec 24 - Jan 5</p>
+        <div className="px-4 max-w-md mx-auto space-y-4 animate-fade-in pt-4">
+          <div className="text-center mb-8">
+            <span className="bg-white/60 dark:bg-slate-800/60 px-4 py-1.5 rounded-full text-xs font-bold text-slate-500 dark:text-slate-400 backdrop-blur-sm shadow-sm border border-white/50 dark:border-slate-700">
+              <i className="fa-regular fa-calendar mr-2"></i>Dec 24 - Jan 5
+            </span>
           </div>
           {GAMES_CONFIG.map((game, idx) => {
-            const locked = isLocked(game.date, devMode);
+            const locked = isLocked(game.date);
+            const isCompleted = progress[idx]?.completed;
             return (
               <GameCard
                 key={idx}
                 game={game}
                 index={idx}
                 locked={locked}
-                completed={completedGames.includes(idx)}
+                completed={isCompleted}
                 onClick={() =>
                   !locked && (setActiveGameIndex(idx), setView("GAME"))
                 }
@@ -899,6 +991,8 @@ function App() {
             <Wordle
               target={GAMES_CONFIG[activeGameIndex].target}
               reward={GAMES_CONFIG[activeGameIndex].reward}
+              initialState={progress[activeGameIndex]}
+              onSave={(data) => saveGameProgress(activeGameIndex, data)}
               onComplete={() => handleGameComplete(activeGameIndex)}
             />
           )}
@@ -906,6 +1000,8 @@ function App() {
             <Strands
               file={GAMES_CONFIG[activeGameIndex].file}
               theme={GAMES_CONFIG[activeGameIndex].theme}
+              initialState={progress[activeGameIndex]}
+              onSave={(data) => saveGameProgress(activeGameIndex, data)}
               onComplete={() => handleGameComplete(activeGameIndex)}
             />
           )}
@@ -914,6 +1010,8 @@ function App() {
               center={GAMES_CONFIG[activeGameIndex].center}
               letters={GAMES_CONFIG[activeGameIndex].letters}
               msg={GAMES_CONFIG[activeGameIndex].msg}
+              initialState={progress[activeGameIndex]}
+              onSave={(data) => saveGameProgress(activeGameIndex, data)}
               onComplete={() => handleGameComplete(activeGameIndex)}
             />
           )}

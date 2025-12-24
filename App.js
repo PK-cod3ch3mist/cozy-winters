@@ -50,7 +50,7 @@ const USER_WORDS = [
 
 const GAMES_CONFIG = [
   {
-    date: "2025-12-24",
+    date: "2025-12-23",
     type: "WORDLE",
     title: "Wordle: Day 1",
     target: "POSCA",
@@ -58,14 +58,14 @@ const GAMES_CONFIG = [
     reward: "assets/wordle1.jpg",
   },
   {
-    date: "2025-12-25",
+    date: "2025-12-24",
     type: "STRANDS",
     title: "Strands: Places Together",
     theme: "Places together",
     file: "assets/strand1.json",
   },
   {
-    date: "2025-12-26",
+    date: "2025-12-25",
     type: "WORDLE",
     title: "Wordle: Day 3",
     target: "WASHI",
@@ -73,7 +73,7 @@ const GAMES_CONFIG = [
     reward: "assets/wordle2.jpg",
   },
   {
-    date: "2025-12-27",
+    date: "2025-12-26",
     type: "BEE",
     title: "Spelling Bee: Name Game",
     center: "A",
@@ -81,7 +81,7 @@ const GAMES_CONFIG = [
     msg: "Letters of your name (had to add a P to make it 7 letters :P)",
   },
   {
-    date: "2025-12-28",
+    date: "2025-12-27",
     type: "WORDLE",
     title: "Wordle: Day 5",
     target: "TRADE",
@@ -89,14 +89,14 @@ const GAMES_CONFIG = [
     reward: "assets/wordle3.jpg",
   },
   {
-    date: "2025-12-29",
+    date: "2025-12-28",
     type: "STRANDS",
     title: "Strands: Yum Yum",
     theme: "Yum yum yum",
     file: "assets/strand2.json",
   },
   {
-    date: "2025-12-30",
+    date: "2025-12-29",
     type: "WORDLE",
     title: "Wordle: Day 7",
     target: "SPORT",
@@ -104,7 +104,7 @@ const GAMES_CONFIG = [
     reward: "assets/wordle4.jpg",
   },
   {
-    date: "2025-12-31",
+    date: "2025-12-30",
     type: "BEE",
     title: "Spelling Bee: My Turn",
     center: "T",
@@ -112,7 +112,7 @@ const GAMES_CONFIG = [
     msg: "Letters of mine (if someone butchered the pronunciation XD)",
   },
   {
-    date: "2026-01-01",
+    date: "2025-12-31",
     type: "WORDLE",
     title: "Wordle: New Year",
     target: "MODEL",
@@ -120,14 +120,14 @@ const GAMES_CONFIG = [
     reward: "assets/wordle5.jpg",
   },
   {
-    date: "2026-01-02",
+    date: "2026-01-01",
     type: "STRANDS",
     title: "Strands: 4:45",
     theme: "Four forty five",
     file: "assets/strand3.json",
   },
   {
-    date: "2026-01-03",
+    date: "2026-01-02",
     type: "WORDLE",
     title: "Wordle: Day 11",
     target: "CHESS",
@@ -135,7 +135,7 @@ const GAMES_CONFIG = [
     reward: "assets/wordle6.jpg",
   },
   {
-    date: "2026-01-04",
+    date: "2026-01-03",
     type: "BEE",
     title: "Spelling Bee: Hoops",
     center: "E",
@@ -143,7 +143,7 @@ const GAMES_CONFIG = [
     msg: "Can you score more than an NBA game?",
   },
   {
-    date: "2026-01-05",
+    date: "2026-01-04",
     type: "WORDLE",
     title: "Wordle: Finale",
     target: "DIARY",

@@ -94,13 +94,14 @@ const GAMES_CONFIG = [
     title: "Strands: Yum Yum",
     theme: "Yum yum yum",
     file: "assets/strand2.json",
+    reward: "assets/strand2.jpg",
   },
   {
     date: "2025-12-29",
     type: "WORDLE",
     title: "Wordle: Day 7",
     target: "SPORT",
-    hint: "Physical activity and competition.",
+    hint: "Oye?",
     reward: "assets/wordle4.jpg",
   },
   {
@@ -116,7 +117,7 @@ const GAMES_CONFIG = [
     type: "WORDLE",
     title: "Wordle: New Year",
     target: "MODEL",
-    hint: "Pose, structure, or example.",
+    hint: "The metro brings you home",
     reward: "assets/wordle5.jpg",
   },
   {
@@ -125,13 +126,14 @@ const GAMES_CONFIG = [
     title: "Strands: 4:45",
     theme: "Four forty five",
     file: "assets/strand3.json",
+    reward: "assets/strand3.jpg",
   },
   {
     date: "2026-01-02",
     type: "WORDLE",
     title: "Wordle: Day 11",
     target: "CHESS",
-    hint: "Strategy on 64 squares.",
+    hint: "O captain my captain",
     reward: "assets/wordle6.jpg",
   },
   {
@@ -470,7 +472,7 @@ const Wordle = ({ target, reward, onComplete, initialState, onSave }) => {
     MODULE: STRANDS GAME
     ========================================= */
 
-const Strands = ({ file, theme, onComplete, initialState, onSave }) => {
+const Strands = ({ file, theme, reward, onComplete, initialState, onSave }) => {
   const [grid, setGrid] = useState([]);
   const [placedWords, setPlacedWords] = useState([]);
   const [foundWords, setFoundWords] = useState(initialState?.foundWords || []);
@@ -600,6 +602,15 @@ const Strands = ({ file, theme, onComplete, initialState, onSave }) => {
           {theme}
         </span>
       </div>
+
+      {foundWords.length >= placedWords.length && reward && (
+        <button
+          onClick={() => window.open(reward, "_blank")}
+          className="mb-8 px-8 py-3 bg-gradient-to-r from-cozy-500 to-purple-500 text-white font-bold rounded-full shadow-lg shadow-cozy-200 transform transition hover:scale-105 active:scale-95 animate-float flex items-center gap-2"
+        >
+          <i className="fa-solid fa-gift text-xl"></i> See Reward
+        </button>
+      )}
 
       <div
         className="relative bg-white dark:bg-slate-800 p-3 rounded-2xl shadow-inner border-4 border-ice-100 dark:border-slate-700 touch-none"
@@ -1000,6 +1011,7 @@ function App() {
             <Strands
               file={GAMES_CONFIG[activeGameIndex].file}
               theme={GAMES_CONFIG[activeGameIndex].theme}
+              reward={GAMES_CONFIG[activeGameIndex].reward}
               initialState={progress[activeGameIndex]}
               onSave={(data) => saveGameProgress(activeGameIndex, data)}
               onComplete={() => handleGameComplete(activeGameIndex)}

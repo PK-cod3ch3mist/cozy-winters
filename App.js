@@ -97,7 +97,7 @@ const GAMES_CONFIG = [
     reward: "assets/strand2.jpg",
   },
   {
-    date: "2025-12-29",
+    date: "2025-12-28",
     type: "WORDLE",
     title: "Wordle: Day 7",
     target: "SPORT",

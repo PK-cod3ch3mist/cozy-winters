@@ -113,6 +113,14 @@ const GAMES_CONFIG = [
     reward: "assets/wordlebonus.jpg",
   },
   {
+    date: "2025-12-29",
+    type: "WORDLE",
+    title: "How many in a day??",
+    target: "CRAFT",
+    hint: "No hints this time",
+    reward: "assets/wordlehuh.jpg",
+  },
+  {
     date: "2025-12-30",
     type: "BEE",
     title: "Spelling Bee: My Turn",

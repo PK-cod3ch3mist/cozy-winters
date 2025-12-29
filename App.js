@@ -54,7 +54,7 @@ const GAMES_CONFIG = [
     type: "WORDLE",
     title: "Wordle: Day 1",
     target: "POSCA",
-    hint: "A creative tool we know well.",
+    hint: "My first gift to you (i think)...",
     reward: "assets/wordle1.jpg",
   },
   {
@@ -69,7 +69,7 @@ const GAMES_CONFIG = [
     type: "WORDLE",
     title: "Wordle: Day 3",
     target: "WASHI",
-    hint: "Sticky, decorative, fun.",
+    hint: "Blinkit can be so cool sometimes...",
     reward: "assets/wordle2.jpg",
   },
   {
@@ -85,7 +85,7 @@ const GAMES_CONFIG = [
     type: "WORDLE",
     title: "Wordle: Day 5",
     target: "TRADE",
-    hint: "Exchange of goods... or ideas?",
+    hint: "Oye Alpha!",
     reward: "assets/wordle3.jpg",
   },
   {
@@ -109,7 +109,7 @@ const GAMES_CONFIG = [
     type: "WORDLE",
     title: "Another wordle?? Wow",
     target: "FIFTH",
-    hint: "Remember the poster on your wall",
+    hint: "Cause you're so classic!",
     reward: "assets/wordlebonus.jpg",
   },
   {

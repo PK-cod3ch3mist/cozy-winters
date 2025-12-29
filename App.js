@@ -165,7 +165,7 @@ const GAMES_CONFIG = [
     type: "WORDLE",
     title: "Wordle: Finale",
     target: "DIARY",
-    hint: "Not a hint: I'm glad you came",
+    hint: "Not a hint: this one took time to decide.",
     reward: "assets/wordle7.jpg",
   },
 ];

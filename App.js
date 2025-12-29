@@ -133,7 +133,7 @@ const GAMES_CONFIG = [
     type: "WORDLE",
     title: "Wordle: New Year",
     target: "MODEL",
-    hint: "The metro brings you home",
+    hint: "Not a hint: aren't metro pickups also dreamy?",
     reward: "assets/wordle5.jpg",
   },
   {
@@ -149,7 +149,7 @@ const GAMES_CONFIG = [
     type: "WORDLE",
     title: "Wordle: Day 11",
     target: "CHESS",
-    hint: "O captain my captain",
+    hint: "Not a hint: first photo together yaad hai?",
     reward: "assets/wordle6.jpg",
   },
   {
@@ -165,7 +165,7 @@ const GAMES_CONFIG = [
     type: "WORDLE",
     title: "Wordle: Finale",
     target: "DIARY",
-    hint: "Where secrets and days are kept.",
+    hint: "Not a hint: I'm glad you came",
     reward: "assets/wordle7.jpg",
   },
 ];

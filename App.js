@@ -47,108 +47,199 @@ const USER_WORDS = [
   "KEARNEY",
   "FLUTE",
   // Summer additions:
-  "BEACH",
-  "MANGO",
-  "OCEAN",
-  "SUNNY",
+  "VIKRANT",
+  "TEMPLE",
+  "CLIFF",
+  "ARCHAEOLOGY",
   "TOWEL",
   "SHELL",
-  "WATER",
-  "SWIM",
+  "TOSSINPIZZA",
+  "SAREE",
+  "EXCEL",
 ];
 
 const WINTER_CONFIG = [
   {
-    date: "2025-12-24",
+    date: "2025-12-23",
     type: "WORDLE",
     title: "Wordle: Day 1",
     target: "POSCA",
-    hint: "A creative tool we know well.",
+    hint: "My first gift to you (i think)...",
     reward: "assets/wordle1.jpg",
   },
   {
-    date: "2025-12-25",
+    date: "2025-12-24",
     type: "STRANDS",
     title: "Strands: Places Together",
     theme: "Places together",
     file: "assets/strand1.json",
+  },
+  {
+    date: "2025-12-25",
+    type: "WORDLE",
+    title: "Wordle: Day 3",
+    target: "WASHI",
+    hint: "Blinkit can be so cool sometimes...",
     reward: "assets/wordle2.jpg",
   },
   {
     date: "2025-12-26",
-    type: "WORDLE",
-    title: "Wordle: Day 3",
-    target: "WASHI",
-    hint: "Sticky, decorative, fun.",
-    reward: "assets/wordle3.jpg",
-  },
-  {
-    date: "2025-12-27",
     type: "BEE",
     title: "Spelling Bee: Name Game",
     center: "A",
     letters: ["R", "I", "Y", "J", "N", "P"],
     msg: "Letters of your name (had to add a P to make it 7 letters :P)",
-    reward: "assets/wordle4.jpg",
   },
   {
-    date: "2025-12-28",
+    date: "2025-12-27",
     type: "WORDLE",
     title: "Wordle: Day 5",
     target: "TRADE",
-    hint: "Exchange of goods... or ideas?",
-    reward: "assets/wordle5.jpg",
+    hint: "Oye Alpha!",
+    reward: "assets/wordle3.jpg",
   },
   {
-    date: "2025-12-29",
+    date: "2025-12-28",
     type: "STRANDS",
     title: "Strands: Yum Yum",
     theme: "Yum yum yum",
     file: "assets/strand2.json",
-    reward: "assets/wordle6.jpg",
+    reward: "assets/strand2.jpg",
   },
   {
-    date: "2025-12-30",
+    date: "2025-12-28",
     type: "WORDLE",
     title: "Wordle: Day 7",
     target: "SPORT",
-    hint: "Physical activity and competition.",
+    hint: "Oye?",
+    reward: "assets/wordle4.jpg",
+  },
+  {
+    date: "2025-12-29",
+    type: "WORDLE",
+    title: "Another wordle?? Wow",
+    target: "FIFTH",
+    hint: "Cause you're so classic!",
+    reward: "assets/wordlebonus.jpg",
+  },
+  {
+    date: "2025-12-29",
+    type: "WORDLE",
+    title: "How many in a day??",
+    target: "CRAFT",
+    hint: "No hints this time",
+    reward: "assets/wordlehuh.jpg",
+  },
+  {
+    date: "2025-12-30",
+    type: "BEE",
+    title: "Spelling Bee: My Turn",
+    center: "T",
+    letters: ["P", "R", "A", "U", "S", "H"],
+    msg: "Letters of mine (if someone butchered the pronunciation XD)",
+  },
+  {
+    date: "2025-12-31",
+    type: "WORDLE",
+    title: "Wordle: New Year",
+    target: "MODEL",
+    hint: "Not a hint: aren't metro pickups also dreamy?",
+    reward: "assets/wordle5.jpg",
+  },
+  {
+    date: "2026-01-01",
+    type: "STRANDS",
+    title: "Strands: 4:45",
+    theme: "Four forty five",
+    file: "assets/strand3.json",
+    reward: "assets/strand3.jpg",
+  },
+  {
+    date: "2026-01-02",
+    type: "WORDLE",
+    title: "Wordle: Day 11",
+    target: "CHESS",
+    hint: "Not a hint: first photo together yaad hai?",
+    reward: "assets/wordle6.jpg",
+  },
+  {
+    date: "2026-01-03",
+    type: "BEE",
+    title: "Spelling Bee: Hoops",
+    center: "E",
+    letters: ["B", "A", "S", "K", "T", "L"],
+    msg: "Can you score more than an NBA game?",
+  },
+  {
+    date: "2026-01-04",
+    type: "WORDLE",
+    title: "Wordle: Finale",
+    target: "DIARY",
+    hint: "Not a hint: this one took time to decide.",
     reward: "assets/wordle7.jpg",
   },
 ];
 
 const SUMMER_CONFIG = [
   {
-    date: "2026-05-01",
-    type: "HANGMAN",
-    title: "Save the Ice Cream",
-    target: "MANGO",
-    hint: "The king of summer fruits.",
-    reward: "assets/summer1.jpg",
-  },
-  {
-    date: "2026-05-02",
-    type: "MEMORY",
-    title: "Summer Pairs",
-    emojis: ["☀️", "🍦", "🍉", "🌊", "🏖️", "🐚"],
-    hint: "Find the matching summer vibes!",
-    reward: "assets/summer2.jpg",
-  },
-  {
-    date: "2026-05-03",
-    type: "HANGMAN",
-    title: "Save the Ice Cream 2",
-    target: "OCEAN",
-    hint: "Big, blue, and salty.",
-    reward: "assets/summer3.jpg",
-  },
-  {
-    date: "2026-05-04",
+    date: "2026-05-14",
     type: "WORDLE",
-    title: "Summer Wordle",
-    target: "BEACH",
-    hint: "Where the sand meets the sea.",
-    reward: "assets/summer4.jpg",
+    title: "Wordle: New Seasons",
+    target: "CLIFF",
+    hint: "A leap of faith (wary of the bushes)",
+    reward: "assets/summer1.mp4",
+  },
+  {
+    date: "2026-05-15",
+    type: "MEMORY",
+    title: "Pairs: Ones like us",
+    emojis: ["☀️", "🍦", "🍉", "🌊", "🏖️", "🐚", "🌴", "🌺"],
+    hint: "Find the matching summer vibes!",
+  },
+  {
+    date: "2026-05-16",
+    type: "WORDLE",
+    title: "Wordle: Day 2",
+    target: "TOWEL",
+    hint: "The drop took my breath away.",
+    reward: "assets/summer2.mp4",
+  },
+  {
+    date: "2026-05-17",
+    type: "HANGMAN",
+    title: "Lemonade: And filter coffee",
+    target: "VIKRANT",
+    hint: "First of many.",
+  },
+  {
+    date: "2026-05-18",
+    type: "WORDLE",
+    title: "Wordle: And numbers",
+    target: "EXCEL",
+    hint: "Tucked in bed, or is it?",
+    reward: "assets/summer3.mp4",
+  },
+  {
+    date: "2026-05-19",
+    type: "HANGMAN",
+    title: "Lemonade: And a puzzle",
+    target: "ARCHAEOLOGY",
+    hint: "Kid Riya's day one offer",
+  },
+  {
+    date: "2026-05-20",
+    type: "WORDLE",
+    title: "Wordle: Play some tunes",
+    target: "BLINK",
+    hint: "Enough times to sleep or rock",
+    reward: "assets/summer4.mp4",
+  },
+  {
+    date: "2026-05-21",
+    type: "MEMORY",
+    title: "Pairs: A competition?",
+    emojis: ["🐫", "🥈", "🎹", "🪈", "🍸", "🌻", "☕️", "👙"],
+    hint: "Find the matching summer vibes!",
   },
 ];
 
@@ -193,18 +284,18 @@ const isLocked = (dateStr) => {
 };
 
 const Header = ({ view, setView, darkMode, toggleDarkMode }) => (
-  <header className="sticky top-0 z-40 backdrop-blur-md bg-white/70 dark:bg-slate-900/80 border-b border-cozy-100 dark:border-slate-700 transition-colors">
+  <header className="sticky top-0 z-40 backdrop-blur-md bg-white/70 dark:bg-slate-900/80 border-b border-gray-200 dark:border-slate-700 transition-colors">
     <div className="max-w-md mx-auto px-4 h-16 flex justify-between items-center">
       <h1
         onClick={() => setView("HOME")}
-        className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cozy-500 to-purple-500 cursor-pointer tracking-tight"
+        className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 dark:from-yellow-400 dark:to-orange-500 cursor-pointer tracking-tight"
       >
         Daily Puzzle
       </h1>
       <div className="flex items-center gap-3">
         <button
           onClick={toggleDarkMode}
-          className="w-10 h-10 rounded-full flex items-center justify-center bg-ice-100 dark:bg-slate-800 text-ice-800 dark:text-yellow-400 transition-colors"
+          className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 dark:bg-slate-800 text-gray-800 dark:text-yellow-400 transition-colors"
         >
           {darkMode ? (
             <i className="fa-solid fa-sun"></i>
@@ -241,12 +332,13 @@ const GameShell = ({ title, hint, children }) => (
   </div>
 );
 
+// Updated Reward Button to handle the new tab functionality securely
 const RewardButton = ({ rewardUrl }) => {
   if (!rewardUrl) return null;
   return (
     <button
-      onClick={() => window.open(rewardUrl, "_blank")}
-      className="mt-6 mb-8 px-8 py-3 bg-gradient-to-r from-cozy-500 to-purple-500 text-white font-bold rounded-full shadow-lg shadow-cozy-200 dark:shadow-purple-900/20 transform transition hover:scale-105 active:scale-95 animate-[bounce_1s_infinite] flex items-center gap-3"
+      onClick={() => window.open(rewardUrl, "_blank", "noopener,noreferrer")}
+      className="mt-6 mb-8 px-8 py-3 bg-gradient-to-r from-green-400 to-blue-500 dark:from-yellow-400 dark:to-orange-500 text-white dark:text-slate-900 font-bold rounded-full shadow-lg transform transition hover:scale-105 active:scale-95 animate-[bounce_1s_infinite] flex items-center gap-3"
     >
       <i className="fa-solid fa-gift text-xl"></i>
       <span>See Reward</span>
@@ -259,7 +351,6 @@ const RewardButton = ({ rewardUrl }) => {
     ========================================= */
 
 const Wordle = ({ target, reward, onComplete, initialState, onSave }) => {
-  // [Code remains the same as your provided Wordle component...]
   const [guesses, setGuesses] = useState(initialState?.guesses || []);
   const [currentGuess, setCurrentGuess] = useState("");
   const [status, setStatus] = useState(initialState?.status || "playing");
@@ -325,12 +416,12 @@ const Wordle = ({ target, reward, onComplete, initialState, onSave }) => {
     <div className="flex flex-col items-center w-full">
       <div className="h-8 mb-2 w-full flex justify-center">
         {msg && (
-          <div className="bg-slate-800 text-white px-4 py-1 rounded-full text-sm animate-bounce shadow-lg z-50">
+          <div className="bg-slate-800 text-white px-4 py-1 rounded-full text-sm shadow-lg z-50">
             {msg}
           </div>
         )}
         {isValidating && (
-          <div className="text-cozy-500 font-bold animate-pulse text-sm">
+          <div className="text-blue-500 font-bold animate-pulse text-sm">
             checking...
           </div>
         )}
@@ -379,7 +470,7 @@ const Wordle = ({ target, reward, onComplete, initialState, onSave }) => {
       </div>
 
       {status === "lost" && (
-        <div className="text-red-500 font-bold mb-6 bg-red-50 px-4 py-2 rounded-lg">
+        <div className="text-red-500 font-bold mb-6 bg-red-50 dark:bg-red-900/30 px-4 py-2 rounded-lg">
           Word was: {target}
         </div>
       )}
@@ -392,7 +483,7 @@ const Wordle = ({ target, reward, onComplete, initialState, onSave }) => {
           <div key={i} className="flex justify-center gap-1.5">
             {row.split("").map((char) => {
               let color =
-                "bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-b-2 border-slate-200 dark:border-slate-900";
+                "bg-gray-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-b-2 border-gray-300 dark:border-slate-900";
               for (let g of guesses) {
                 if (g.includes(char)) {
                   color =
@@ -458,29 +549,34 @@ const Hangman = ({ target, reward, onComplete, initialState, onSave }) => {
   const MAX_MISTAKES = 6;
 
   const mistakes = guessedLetters.filter((l) => !target.includes(l)).length;
-  const isWon = target.split("").every((l) => guessedLetters.includes(l));
-  const isLost = mistakes >= MAX_MISTAKES;
+  const triesLeft = MAX_MISTAKES - mistakes;
 
   useEffect(() => {
-    if (status === "playing") {
-      if (isWon) {
-        setStatus("won");
-        onComplete();
-      } else if (isLost) {
-        setStatus("lost");
-      }
-    }
     onSave({ guessedLetters, status });
-  }, [guessedLetters, isWon, isLost, status]);
+  }, [guessedLetters, status, onSave]);
 
   const handleKey = useCallback(
     (key) => {
       if (status !== "playing" || guessedLetters.includes(key)) return;
       if (/^[A-Z]$/.test(key)) {
-        setGuessedLetters((prev) => [...prev, key]);
+        const newGuesses = [...guessedLetters, key];
+        setGuessedLetters(newGuesses);
+
+        const newMistakes = newGuesses.filter(
+          (l) => !target.includes(l),
+        ).length;
+        const isWonNow = target.split("").every((l) => newGuesses.includes(l));
+        const isLostNow = newMistakes >= MAX_MISTAKES;
+
+        if (isWonNow) {
+          setStatus("won");
+          onComplete();
+        } else if (isLostNow) {
+          setStatus("lost");
+        }
       }
     },
-    [status, guessedLetters],
+    [status, guessedLetters, target, onComplete],
   );
 
   useEffect(() => {
@@ -489,20 +585,57 @@ const Hangman = ({ target, reward, onComplete, initialState, onSave }) => {
     return () => window.removeEventListener("keydown", listener);
   }, [handleKey]);
 
-  // Visual stages of melting ice cream (Emojis for simplicity, can swap for images)
-  const iceCreamStages = ["🍦", "🍨", "🍧", "🫠", "💧", "💦", "☀️"];
-
   return (
     <div className="flex flex-col items-center w-full">
-      <div className="text-8xl mb-8 transition-transform hover:scale-110 select-none">
-        {iceCreamStages[Math.min(mistakes, 6)]}
+      {/* Tries Indicator */}
+      <div
+        className={`mb-4 px-4 py-1.5 rounded-full font-bold text-sm shadow-sm border flex items-center gap-2 transition-colors ${
+          triesLeft <= 2
+            ? "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800"
+            : "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-800"
+        }`}
+      >
+        <i
+          className={`fa-solid fa-sun ${triesLeft > 0 && status === "playing" ? "animate-[spin_4s_linear_infinite]" : ""}`}
+        ></i>
+        Tries Left: {triesLeft}
       </div>
 
+      {/* CSS-Art Lemonade Bottle */}
+      <div className="flex flex-col items-center mb-8">
+        {/* Bottle Cap & Neck */}
+        <div className="w-8 h-4 bg-amber-500 rounded-t-md border-2 border-slate-400 dark:border-slate-500 border-b-0 z-10 relative">
+          {/* Cute little straw sticking out */}
+          <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-2 h-10 bg-stripes bg-[length:10px_10px] bg-red-400 border border-red-500 rounded-t-full origin-bottom rotate-12 z-0"></div>
+        </div>
+        <div className="w-12 h-6 border-x-4 border-slate-300 dark:border-slate-500 bg-white/30 dark:bg-slate-800/50 z-10 relative shadow-inner"></div>
+
+        {/* Bottle Body */}
+        <div className="relative w-28 h-40 border-4 border-slate-300 dark:border-slate-500 rounded-xl overflow-hidden flex flex-col justify-end bg-slate-50/50 dark:bg-slate-800/40 shadow-[inset_0_-4px_10px_rgba(0,0,0,0.1)] z-10">
+          {/* Lemonade Liquid */}
+          <div
+            className="w-full bg-gradient-to-t from-yellow-400 to-yellow-200 transition-all duration-700 ease-out relative flex justify-center"
+            style={{ height: `${(triesLeft / MAX_MISTAKES) * 100}%` }}
+          >
+            {/* Bubbles */}
+            {triesLeft > 0 && (
+              <>
+                <div className="absolute top-2 left-3 w-3 h-3 border-[2px] border-yellow-500 rounded-full opacity-60"></div>
+                <div className="absolute top-6 right-4 w-2 h-2 border-[2px] border-yellow-500 rounded-full opacity-60"></div>
+              </>
+            )}
+          </div>
+          {/* Glass reflection */}
+          <div className="absolute top-0 left-2 w-4 h-full bg-white/40 dark:bg-white/10 skew-x-12 z-10"></div>
+        </div>
+      </div>
+
+      {/* Word Guessing Area */}
       <div className="flex gap-2 mb-10">
         {target.split("").map((letter, i) => (
           <div
             key={i}
-            className={`w-12 h-14 flex items-center justify-center text-3xl font-black uppercase border-b-4 ${guessedLetters.includes(letter) || status === "lost" ? "border-slate-800 dark:border-white text-slate-800 dark:text-white" : "border-slate-300 dark:border-slate-600 text-transparent"}`}
+            className={`w-10 h-14 sm:w-12 flex items-center justify-center text-3xl font-black uppercase border-b-4 ${guessedLetters.includes(letter) || status === "lost" ? "border-slate-800 dark:border-white text-slate-800 dark:text-white" : "border-slate-300 dark:border-slate-600 text-transparent"}`}
           >
             {guessedLetters.includes(letter) || status === "lost"
               ? letter
@@ -512,12 +645,13 @@ const Hangman = ({ target, reward, onComplete, initialState, onSave }) => {
       </div>
 
       {status === "lost" && (
-        <div className="text-red-500 font-bold mb-6 bg-red-50 px-4 py-2 rounded-lg">
-          Oh no! It melted. Word: {target}
+        <div className="text-red-500 font-bold mb-6 bg-red-50 dark:bg-red-900/30 px-4 py-2 rounded-lg">
+          Oh no! The bottle is empty. Word: {target}
         </div>
       )}
       {status === "won" && <RewardButton rewardUrl={reward} />}
 
+      {/* Keyboard */}
       <div
         className={`flex flex-wrap justify-center gap-2 max-w-sm ${status !== "playing" ? "opacity-50 pointer-events-none" : ""}`}
       >
@@ -560,9 +694,9 @@ const MemoryMatch = ({ emojis, reward, onComplete, initialState, onSave }) => {
   const [flippedIndices, setFlippedIndices] = useState([]);
   const [status, setStatus] = useState(initialState?.status || "playing");
   const [lockBoard, setLockBoard] = useState(false);
+  const [tries, setTries] = useState(initialState?.tries || 0);
 
   useEffect(() => {
-    // Initialize cards only once
     if (cards.length === 0 && emojis) {
       const shuffledCards = [...emojis, ...emojis]
         .sort(() => Math.random() - 0.5)
@@ -577,16 +711,8 @@ const MemoryMatch = ({ emojis, reward, onComplete, initialState, onSave }) => {
   }, [emojis]);
 
   useEffect(() => {
-    if (
-      cards.length > 0 &&
-      cards.every((c) => c.isMatched) &&
-      status === "playing"
-    ) {
-      setStatus("won");
-      onComplete();
-    }
-    onSave({ cards, status });
-  }, [cards, status]);
+    onSave({ cards, status, tries });
+  }, [cards, status, tries, onSave]);
 
   const handleCardClick = (index) => {
     if (lockBoard || cards[index].isFlipped || cards[index].isMatched) return;
@@ -600,22 +726,29 @@ const MemoryMatch = ({ emojis, reward, onComplete, initialState, onSave }) => {
 
     if (newFlipped.length === 2) {
       setLockBoard(true);
+      setTries((prev) => prev + 1);
       const [firstIdx, secondIdx] = newFlipped;
 
       if (newCards[firstIdx].emoji === newCards[secondIdx].emoji) {
-        // Match found
         setTimeout(() => {
+          let isGameWon = false;
           setCards((prev) => {
             const matched = [...prev];
             matched[firstIdx].isMatched = true;
             matched[secondIdx].isMatched = true;
+            if (matched.every((c) => c.isMatched)) isGameWon = true;
             return matched;
           });
+
+          if (isGameWon) {
+            setStatus("won");
+            onComplete();
+          }
+
           setFlippedIndices([]);
           setLockBoard(false);
         }, 500);
       } else {
-        // No match
         setTimeout(() => {
           setCards((prev) => {
             const unflipped = [...prev];
@@ -632,6 +765,11 @@ const MemoryMatch = ({ emojis, reward, onComplete, initialState, onSave }) => {
 
   return (
     <div className="flex flex-col items-center w-full">
+      <div className="mb-6 px-5 py-2 rounded-full font-bold text-sm shadow-sm border flex items-center gap-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 transition-colors">
+        <i className="fa-solid fa-layer-group"></i>
+        Pairs Tried: {tries}
+      </div>
+
       <div className="grid grid-cols-4 gap-3 mb-8">
         {cards.map((card, i) => (
           <div
@@ -640,7 +778,7 @@ const MemoryMatch = ({ emojis, reward, onComplete, initialState, onSave }) => {
             className={`w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center text-4xl cursor-pointer rounded-xl transition-all duration-300 transform perspective-1000 ${
               card.isFlipped || card.isMatched
                 ? "bg-white dark:bg-slate-700 shadow-md rotate-y-180"
-                : "bg-cozy-400 hover:bg-cozy-500 shadow-sm"
+                : "bg-blue-200 dark:bg-blue-900 hover:bg-blue-300 shadow-sm"
             } ${card.isMatched ? "opacity-50 scale-95" : ""}`}
           >
             {(card.isFlipped || card.isMatched) && <span>{card.emoji}</span>}
@@ -648,7 +786,14 @@ const MemoryMatch = ({ emojis, reward, onComplete, initialState, onSave }) => {
         ))}
       </div>
 
-      {status === "won" && <RewardButton rewardUrl={reward} />}
+      {status === "won" && (
+        <div className="flex flex-col items-center animate-fade-in">
+          <p className="text-green-500 font-bold mb-2">
+            Solved in {tries} tries!
+          </p>
+          <RewardButton rewardUrl={reward} />
+        </div>
+      )}
     </div>
   );
 };
@@ -664,7 +809,7 @@ const GameCard = ({ game, index, locked, completed, onClick, isSummer }) => (
       locked
         ? "bg-slate-100 dark:bg-slate-800/50 border-transparent opacity-60 cursor-not-allowed"
         : "bg-white dark:bg-slate-800 border-white dark:border-slate-700 shadow-sm hover:shadow-lg hover:-translate-y-1 cursor-pointer"
-    } ${completed ? (isSummer ? "ring-2 ring-yellow-300 bg-yellow-50/30" : "ring-2 ring-green-200 bg-green-50/30") : ""}`}
+    } ${completed ? "ring-2 ring-green-400 bg-green-50/50 dark:bg-green-900/20" : ""}`}
   >
     <div className="flex justify-between items-center mb-2">
       <span
@@ -672,8 +817,8 @@ const GameCard = ({ game, index, locked, completed, onClick, isSummer }) => (
           locked
             ? "bg-gray-200 text-gray-400"
             : isSummer
-              ? "bg-yellow-100 text-yellow-700"
-              : "bg-ice-100 dark:bg-slate-700 text-ice-700 dark:text-ice-300"
+              ? "bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400"
+              : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
         }`}
       >
         {new Date(game.date).toLocaleDateString("en-US", {
@@ -682,15 +827,13 @@ const GameCard = ({ game, index, locked, completed, onClick, isSummer }) => (
         })}
       </span>
       {completed && (
-        <i
-          className={`fa-solid fa-circle-check text-lg ${isSummer ? "text-yellow-500" : "text-green-500"}`}
-        ></i>
+        <i className="fa-solid fa-circle-check text-lg text-green-500"></i>
       )}
       {locked && <i className="fa-solid fa-lock text-slate-300"></i>}
     </div>
 
     <h3
-      className={`text-lg font-bold ${locked ? "text-slate-400" : "text-slate-700 dark:text-slate-200 group-hover:text-cozy-600 transition-colors"}`}
+      className={`text-lg font-bold ${locked ? "text-slate-400" : "text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-yellow-400 transition-colors"}`}
     >
       {game.title.split(":")[0]}
     </h3>
@@ -704,7 +847,7 @@ const GameCard = ({ game, index, locked, completed, onClick, isSummer }) => (
 
 function App() {
   const [view, setView] = useState("HOME");
-  const [edition, setEdition] = useState("WINTER"); // "WINTER" or "SUMMER"
+  const [edition, setEdition] = useState("WINTER");
   const [activeGameIndex, setActiveGameIndex] = useState(null);
 
   const [darkMode, setDarkMode] = useState(
@@ -725,12 +868,14 @@ function App() {
   );
 
   const saveGameProgress = (gameId, data) => {
-    const newProgress = {
-      ...progress,
-      [gameId]: { ...(progress[gameId] || {}), ...data },
-    };
-    setProgress(newProgress);
-    localStorage.setItem("puzzleProgressV4", JSON.stringify(newProgress));
+    setProgress((prev) => {
+      const newProgress = {
+        ...prev,
+        [gameId]: { ...(prev[gameId] || {}), ...data },
+      };
+      localStorage.setItem("puzzleProgressV4", JSON.stringify(newProgress));
+      return newProgress;
+    });
   };
 
   const handleGameComplete = (gameId) => {
@@ -742,7 +887,7 @@ function App() {
 
   return (
     <div
-      className={`min-h-screen pb-12 font-sans transition-colors duration-500 ${edition === "SUMMER" ? "bg-gradient-to-b from-yellow-50 to-orange-50 dark:from-slate-900 dark:to-slate-800" : "winter-bg"}`}
+      className={`min-h-screen pb-12 font-sans transition-colors duration-500 ${edition === "SUMMER" ? "bg-gradient-to-b from-yellow-50 to-orange-50 dark:from-slate-900 dark:to-slate-800" : "bg-gradient-to-b from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800"}`}
     >
       <Header
         view={view}
@@ -757,7 +902,7 @@ function App() {
           <div className="flex bg-white dark:bg-slate-800 p-1 rounded-full shadow-sm mb-6 border border-gray-100 dark:border-slate-700">
             <button
               onClick={() => setEdition("WINTER")}
-              className={`flex-1 py-2 rounded-full text-sm font-bold transition-all ${edition === "WINTER" ? "bg-ice-100 dark:bg-slate-700 text-ice-800 dark:text-white shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
+              className={`flex-1 py-2 rounded-full text-sm font-bold transition-all ${edition === "WINTER" ? "bg-blue-100 dark:bg-slate-700 text-blue-800 dark:text-white shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
             >
               ❄️ Winter Edition
             </button>
@@ -772,7 +917,7 @@ function App() {
           <div className="text-center mb-6">
             <span className="bg-white/60 dark:bg-slate-800/60 px-4 py-1.5 rounded-full text-xs font-bold text-slate-500 dark:text-slate-400 backdrop-blur-sm shadow-sm border border-white/50 dark:border-slate-700">
               <i className="fa-regular fa-calendar mr-2"></i>
-              {edition === "WINTER" ? "Dec 24 - Dec 30" : "May 1 - May 4"}
+              {edition === "WINTER" ? "Dec 24 - Jan 4" : "May 14 - Jul 14"}
             </span>
           </div>
 
@@ -839,7 +984,6 @@ function App() {
               }
             />
           )}
-          {/* Strands and Bee components would go here, omitting for space if they aren't in this specific config file currently, but you can paste them back from your previous file! */}
         </GameShell>
       )}
     </div>

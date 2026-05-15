@@ -201,7 +201,7 @@ const SUMMER_CONFIG = [
     type: "WORDLE",
     title: "Wordle: Day 2",
     target: "TOWEL",
-    hint: "The drop took my breath away.",
+    hint: "Took my breath away",
     reward: "assets/summer2.mp4",
   },
   {
@@ -214,9 +214,9 @@ const SUMMER_CONFIG = [
   {
     date: "2026-05-18",
     type: "WORDLE",
-    title: "Wordle: And numbers",
+    title: "Wordle: White",
     target: "EXCEL",
-    hint: "Tucked in bed, or is it?",
+    hint: "In bed, or is it?",
     reward: "assets/summer3.mp4",
   },
   {
@@ -229,9 +229,9 @@ const SUMMER_CONFIG = [
   {
     date: "2026-05-20",
     type: "WORDLE",
-    title: "Wordle: Play some tunes",
+    title: "Wordle: Play",
     target: "BLINK",
-    hint: "Enough times to sleep or rock",
+    hint: "Enough to sleep or vibe",
     reward: "assets/summer4.mp4",
   },
   {
@@ -240,6 +240,21 @@ const SUMMER_CONFIG = [
     title: "Pairs: A competition?",
     emojis: ["🐫", "🥈", "🎹", "🪈", "🍸", "🌻", "☕️", "👙"],
     hint: "Find the matching summer vibes!",
+  },
+  {
+    date: "2026-05-22",
+    type: "WORDLE",
+    title: "Wordle: Vacay",
+    target: "SHELL",
+    hint: "Always on the shelf",
+    reward: "assets/summer5.mp4",
+  },
+  {
+    date: "2026-05-23",
+    type: "HANGMAN",
+    title: "Lemonade: And some sides",
+    target: "TOSSINPIZZA",
+    hint: "Maid-sama sesh?",
   },
 ];
 

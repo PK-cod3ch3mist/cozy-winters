@@ -56,6 +56,7 @@ const USER_WORDS = [
   "TOSSINPIZZA",
   "SAREE",
   "EXCEL",
+  "DUNKS",
 ];
 
 const WINTER_CONFIG = [
@@ -255,6 +256,37 @@ const SUMMER_CONFIG = [
     title: "Lemonade: And some sides",
     target: "TOSSINPIZZA",
     hint: "Maid-sama sesh?",
+  },
+  {
+    date: "2026-05-24",
+    type: "WORDLE",
+    title: "Wordle: Gorjusss",
+    target: "SAREE",
+    hint: "Owned it",
+    reward: "assets/summer6.mp4",
+  },
+  {
+    date: "2026-05-25",
+    type: "BEE",
+    title: "Spelling Bee: Hug",
+    center: "A",
+    letters: ["Y", "I", "E", "R", "N", "G"],
+    msg: "All I need right now",
+  },
+  {
+    date: "2026-05-26",
+    type: "WORDLE",
+    title: "Wordle: Courage",
+    target: "DUNKS",
+    hint: "Golden state",
+    reward: "assets/summer7.mp4",
+  },
+  {
+    date: "2026-05-27",
+    type: "HANGMAN",
+    title: "Lemonade: Riya Jain",
+    target: "TEMPLE",
+    hint: "Auspicious start?",
   },
 ];
 

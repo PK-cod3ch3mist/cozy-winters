@@ -213,6 +213,14 @@ const SUMMER_CONFIG = [
     hint: "First of many.",
   },
   {
+    date: "2026-05-17",
+    type: "PURBLE",
+    title: "Outfit Match: Beach Day",
+    target: { hat: 1, glasses: 2, shirt: 0, shoes: 1 },
+    hint: "Memorize the outfit before it disappears!",
+    reward: "assets/summer8.mp4",
+  },
+  {
     date: "2026-05-18",
     type: "WORDLE",
     title: "Wordle: White",
@@ -846,6 +854,164 @@ const MemoryMatch = ({ emojis, reward, onComplete, initialState, onSave }) => {
 };
 
 /* =========================================
+    MODULE: NEW GAME - OUTFIT MATCH (PURBLE PLACE)
+    ========================================= */
+
+const OUTFIT_OPTIONS = {
+  hat: ["🪖", "🎓", "🎩", "🧢"],
+  glasses: ["🕶️", "👓", "🥽", "👀"],
+  shirt: ["👕", "👔", "🎽", "👚"],
+  shoes: ["👟", "🩴", "⛸️", "👞"],
+};
+
+const PurbleMatch = ({ target, reward, onComplete, initialState, onSave }) => {
+  const [phase, setPhase] = useState(initialState?.phase || "memorize");
+  const [userOutfit, setUserOutfit] = useState(
+    initialState?.userOutfit || { hat: 0, glasses: 0, shirt: 0, shoes: 0 },
+  );
+  const [status, setStatus] = useState(initialState?.status || "playing");
+  const [tries, setTries] = useState(initialState?.tries || 0);
+  const [timeLeft, setTimeLeft] = useState(3);
+  const [feedback, setFeedback] = useState(null);
+
+  useEffect(() => {
+    onSave({ phase, userOutfit, status, tries });
+  }, [phase, userOutfit, status, tries, onSave]);
+
+  useEffect(() => {
+    if (phase === "memorize" && timeLeft > 0) {
+      const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (phase === "memorize" && timeLeft === 0) {
+      setPhase("recreate");
+      setUserOutfit({ hat: 0, glasses: 0, shirt: 0, shoes: 0 }); // Reset to default when phase switches
+    }
+  }, [phase, timeLeft]);
+
+  const handleSelect = (category, index) => {
+    if (status !== "playing") return;
+    setUserOutfit((prev) => ({ ...prev, [category]: index }));
+    setFeedback(null); // Clear feedback when user changes an item
+  };
+
+  const handleSubmit = () => {
+    const newFeedback = {
+      hat: userOutfit.hat === target.hat,
+      glasses: userOutfit.glasses === target.glasses,
+      shirt: userOutfit.shirt === target.shirt,
+      shoes: userOutfit.shoes === target.shoes,
+    };
+
+    setFeedback(newFeedback);
+    setTries((prev) => prev + 1);
+
+    if (Object.values(newFeedback).every((isCorrect) => isCorrect)) {
+      setStatus("won");
+      onComplete();
+    }
+  };
+
+  const OutfitAvatar = ({ outfit }) => (
+    <div className="flex flex-col items-center leading-none text-6xl drop-shadow-lg pb-6 pt-4 bg-white dark:bg-slate-700/50 rounded-2xl w-48 shadow-inner border border-slate-200 dark:border-slate-600">
+      <span className="z-40">{OUTFIT_OPTIONS.hat[outfit.hat]}</span>
+      <span className="-mt-3 z-30">
+        {OUTFIT_OPTIONS.glasses[outfit.glasses]}
+      </span>
+      <span className="-mt-2 z-20">{OUTFIT_OPTIONS.shirt[outfit.shirt]}</span>
+      <span className="-mt-2 z-10">{OUTFIT_OPTIONS.shoes[outfit.shoes]}</span>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col items-center w-full">
+      <div className="mb-4 px-5 py-2 rounded-full font-bold text-sm shadow-sm border flex items-center gap-2 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800">
+        <i className="fa-solid fa-shirt"></i>
+        Attempts: {tries}
+      </div>
+
+      {phase === "memorize" ? (
+        <div className="flex flex-col items-center animate-fade-in">
+          <h3 className="text-xl font-black mb-4 text-slate-700 dark:text-white animate-pulse">
+            Memorize this! ({timeLeft}s)
+          </h3>
+          <OutfitAvatar outfit={target} />
+          <button
+            onClick={() => setPhase("recreate")}
+            className="mt-6 px-6 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white font-bold rounded-full transition-colors"
+          >
+            I'm Ready!
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center w-full animate-fade-in">
+          <div className="flex items-center gap-6 mb-8 w-full justify-center">
+            <OutfitAvatar outfit={userOutfit} />
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 w-full max-w-xs mb-6">
+            {Object.keys(OUTFIT_OPTIONS).map((category) => (
+              <div
+                key={category}
+                className="flex justify-between items-center bg-slate-50 dark:bg-slate-800/80 p-2 rounded-xl border border-slate-200 dark:border-slate-700"
+              >
+                <span className="text-xs uppercase font-bold text-slate-400 w-16 pl-2">
+                  {category}
+                </span>
+                <div className="flex gap-2">
+                  {OUTFIT_OPTIONS[category].map((emoji, idx) => {
+                    const isSelected = userOutfit[category] === idx;
+                    let borderClass =
+                      "border-transparent bg-white dark:bg-slate-700 shadow-sm";
+
+                    if (isSelected) {
+                      if (feedback) {
+                        borderClass = feedback[category]
+                          ? "border-green-500 bg-green-100 dark:bg-green-900/50 shadow-inner"
+                          : "border-red-500 bg-red-100 dark:bg-red-900/50 shadow-inner";
+                      } else {
+                        borderClass =
+                          "border-blue-500 bg-blue-50 dark:bg-blue-900/50 shadow-inner";
+                      }
+                    }
+
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => handleSelect(category, idx)}
+                        disabled={status === "won"}
+                        className={`text-2xl w-12 h-12 flex items-center justify-center rounded-lg border-2 transition-all active:scale-95 ${borderClass}`}
+                      >
+                        {emoji}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {status === "playing" && (
+            <button
+              onClick={handleSubmit}
+              className="px-10 py-3 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-full shadow-lg transform transition hover:scale-105 active:scale-95"
+            >
+              Check Outfit
+            </button>
+          )}
+
+          {status === "won" && (
+            <div className="flex flex-col items-center mt-4">
+              <p className="text-green-500 font-bold mb-2">Perfect match!</p>
+              <RewardButton rewardUrl={reward} />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* =========================================
     MODULE: HOME & APP
     ========================================= */
 
@@ -1021,6 +1187,19 @@ function App() {
           {currentConfig[activeGameIndex].type === "MEMORY" && (
             <MemoryMatch
               emojis={currentConfig[activeGameIndex].emojis}
+              reward={currentConfig[activeGameIndex].reward}
+              initialState={progress[`${edition}_${activeGameIndex}`]}
+              onSave={(data) =>
+                saveGameProgress(`${edition}_${activeGameIndex}`, data)
+              }
+              onComplete={() =>
+                handleGameComplete(`${edition}_${activeGameIndex}`)
+              }
+            />
+          )}
+          {currentConfig[activeGameIndex].type === "PURBLE" && (
+            <PurbleMatch
+              target={currentConfig[activeGameIndex].target}
               reward={currentConfig[activeGameIndex].reward}
               initialState={progress[`${edition}_${activeGameIndex}`]}
               onSave={(data) =>

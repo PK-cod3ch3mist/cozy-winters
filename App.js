@@ -1012,6 +1012,410 @@ const PurbleMatch = ({ target, reward, onComplete, initialState, onSave }) => {
 };
 
 /* =========================================
+    MODULE: SPELLING BEE GAME
+    ========================================= */
+
+const Hive = ({ center, letters, onLetterClick }) => {
+  const positions = [
+    { x: 0, y: -82 },
+    { x: 72, y: -41 },
+    { x: 72, y: 41 },
+    { x: 0, y: 82 },
+    { x: -72, y: 41 },
+    { x: -72, y: -41 },
+  ];
+  return (
+    <div className="relative w-64 h-64 flex items-center justify-center mb-8 mt-4">
+      <div className="absolute z-10" onClick={() => onLetterClick(center)}>
+        <div className="hex-btn center-letter shadow-lg">{center}</div>
+      </div>
+      {letters.map((l, i) => (
+        <div
+          key={i}
+          className="absolute"
+          style={{
+            transform: `translate(${positions[i].x}px, ${positions[i].y}px)`,
+          }}
+          onClick={() => onLetterClick(l)}
+        >
+          <div className="hex-btn">{l}</div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const SpellingBee = ({
+  center,
+  letters,
+  msg,
+  onComplete,
+  initialState,
+  onSave,
+}) => {
+  const [input, setInput] = useState("");
+  const [found, setFound] = useState(initialState?.found || []);
+  const [score, setScore] = useState(initialState?.score || 0);
+  const [error, setError] = useState("");
+  const [isValidating, setIsValidating] = useState(false);
+  const allLetters = [center, ...letters];
+
+  useEffect(() => {
+    onSave({ found, score });
+  }, [found, score]);
+
+  const handleSubmit = async () => {
+    if (isValidating) return;
+    const word = input.toUpperCase();
+    if (word.length < 4) return showError("Too short!");
+    if (!word.includes(center)) return showError("Missing center letter");
+    if (found.includes(word)) return showError("Already found");
+    if ([...word].some((c) => !allLetters.includes(c)))
+      return showError("Bad letters");
+
+    setIsValidating(true);
+    const isValid = await checkWordValidity(word);
+    setIsValidating(false);
+
+    if (!isValid) return showError("Not in word list");
+
+    setFound([...found, word]);
+    const pts = word.length === 4 ? 1 : word.length;
+    const isPangram = allLetters.every((l) => word.includes(l));
+    const newScore = score + pts + (isPangram ? 7 : 0);
+    setScore(newScore);
+    setInput("");
+    if (newScore > 15 && score <= 15) onComplete();
+  };
+
+  const showError = (txt) => {
+    setError(txt);
+    setTimeout(() => setError(""), 1000);
+  };
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="h-16 flex items-center justify-center w-full relative mb-4">
+        <span
+          className={`text-3xl font-black tracking-widest uppercase border-b-2 border-cozy-200 dark:border-slate-600 pb-1 min-w-[200px] text-center ${
+            input ? "text-slate-800 dark:text-white" : "text-gray-300"
+          }`}
+        >
+          {input || <span className="opacity-0">_</span>}
+          <span className="animate-pulse text-cozy-400">|</span>
+        </span>
+        {error && (
+          <div className="absolute -top-8 bg-slate-800 text-white px-3 py-1 rounded text-xs animate-bounce whitespace-nowrap">
+            {error}
+          </div>
+        )}
+      </div>
+
+      <Hive
+        center={center}
+        letters={letters}
+        onLetterClick={(l) => !isValidating && setInput((prev) => prev + l)}
+      />
+
+      <div className="flex gap-4 mb-8">
+        <button
+          onClick={() => setInput((prev) => prev.slice(0, -1))}
+          className="w-14 h-14 rounded-full border-2 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all"
+        >
+          <i className="fa-solid fa-delete-left"></i>
+        </button>
+        <button
+          onClick={() => setInput("")}
+          className="w-14 h-14 rounded-full border-2 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all"
+        >
+          <i className="fa-solid fa-rotate-left"></i>
+        </button>
+        <button
+          onClick={handleSubmit}
+          className="px-8 h-14 rounded-full bg-cozy-500 hover:bg-cozy-600 text-white font-bold text-lg shadow-lg shadow-cozy-200 active:scale-95 transition-all flex items-center gap-2"
+        >
+          Enter
+        </button>
+      </div>
+
+      <div className="w-full bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-ice-100 dark:border-slate-700">
+        <div className="flex justify-between items-center mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
+          <span className="text-xs font-bold uppercase text-gray-400 tracking-wider">
+            Words found: {found.length}
+          </span>
+          <span className="text-sm font-black text-cozy-500 bg-cozy-50 dark:bg-slate-900 px-3 py-1 rounded-full">
+            {score} pts
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+          {found.length === 0 && (
+            <span className="text-gray-300 text-sm italic w-full text-center">
+              Start typing...
+            </span>
+          )}
+          {found.map((f) => (
+            <span
+              key={f}
+              className="text-slate-600 dark:text-slate-300 text-sm px-2 py-1 bg-gray-50 dark:bg-slate-700 rounded"
+            >
+              {f}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* =========================================
+    MODULE: STRANDS GAME
+    ========================================= */
+
+const Strands = ({ file, theme, reward, onComplete, initialState, onSave }) => {
+  const [grid, setGrid] = useState([]);
+  const [placedWords, setPlacedWords] = useState([]);
+  const [foundWords, setFoundWords] = useState(initialState?.foundWords || []);
+  const [foundPaths, setFoundPaths] = useState(initialState?.foundPaths || []);
+  const [hintedWords, setHintedWords] = useState(
+    initialState?.hintedWords || [],
+  );
+  const [selection, setSelection] = useState([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Save state
+  useEffect(() => {
+    if (!loading) onSave({ foundWords, foundPaths, hintedWords });
+  }, [foundWords, foundPaths, hintedWords, loading]);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(file)
+      .then((res) => res.json())
+      .then((data) => {
+        setGrid(data.grid);
+        setPlacedWords(data.words);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, [file]);
+
+  const handleStart = (r, c) => {
+    setIsDragging(true);
+    setSelection([{ r, c }]);
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault();
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (target) {
+      const r = target.getAttribute("data-r");
+      const c = target.getAttribute("data-c");
+      if (r && c) handleEnter(parseInt(r), parseInt(c));
+    }
+  };
+
+  const handleEnter = (r, c) => {
+    if (!isDragging) return;
+    const last = selection[selection.length - 1];
+    const isAdjacent = Math.abs(last.r - r) <= 1 && Math.abs(last.c - c) <= 1;
+    const indexInSel = selection.findIndex((s) => s.r === r && s.c === c);
+    if (isAdjacent) {
+      if (indexInSel === -1) setSelection([...selection, { r, c }]);
+      else if (indexInSel === selection.length - 2)
+        setSelection(selection.slice(0, -1));
+    }
+  };
+
+  const handleEnd = () => {
+    setIsDragging(false);
+    const word = selection.map((s) => grid[s.r][s.c]).join("");
+    const revWord = word.split("").reverse().join("");
+    const check = (w) => {
+      if (placedWords.includes(w) && !foundWords.includes(w)) {
+        const newFound = [...foundWords, w];
+        setFoundWords(newFound);
+        setFoundPaths([...foundPaths, selection]);
+        if (newFound.length === placedWords.length) onComplete();
+      }
+    };
+    check(word);
+    check(revWord);
+    setSelection([]);
+  };
+
+  const handleHint = () => {
+    const available = placedWords.filter(
+      (w) => !foundWords.includes(w) && !hintedWords.includes(w),
+    );
+    if (available.length > 0) {
+      setHintedWords([
+        ...hintedWords,
+        available[Math.floor(Math.random() * available.length)],
+      ]);
+    }
+  };
+
+  const getPathD = (pathCoords) => {
+    if (pathCoords.length < 2 || grid.length === 0) return "";
+    const numRows = grid.length;
+    const numCols = grid[0].length;
+
+    // Convert logic coordinates to percentages (0-100)
+    // Center of a cell at (r,c) is ((c + 0.5)/cols * 100, (r + 0.5)/rows * 100)
+    const toPercent = (r, c) => [
+      ((c + 0.5) / numCols) * 100,
+      ((r + 0.5) / numRows) * 100,
+    ];
+
+    return pathCoords
+      .map((s, i) => {
+        const [x, y] = toPercent(s.r, s.c);
+        return `${i === 0 ? "M" : "L"} ${x} ${y}`;
+      })
+      .join(" ");
+  };
+
+  if (loading)
+    return (
+      <div className="text-center p-8 text-cozy-400 animate-pulse">
+        Building Puzzle...
+      </div>
+    );
+
+  const numCols = grid.length > 0 ? grid[0].length : 6;
+
+  return (
+    <div
+      className="flex flex-col items-center select-none"
+      onMouseUp={handleEnd}
+      onTouchEnd={handleEnd}
+    >
+      <div className="bg-white dark:bg-slate-800 px-6 py-2 rounded-full mb-6 shadow-sm border border-cozy-100 dark:border-slate-700">
+        <span className="text-sm font-bold text-cozy-500 uppercase tracking-wider">
+          {theme}
+        </span>
+      </div>
+
+      {foundWords.length >= placedWords.length && reward && (
+        <button
+          onClick={() => window.open(reward, "_blank")}
+          className="mb-8 px-8 py-3 bg-gradient-to-r from-cozy-500 to-purple-500 text-white font-bold rounded-full shadow-lg shadow-cozy-200 transform transition hover:scale-105 active:scale-95 animate-float flex items-center gap-2"
+        >
+          <i className="fa-solid fa-gift text-xl"></i> See Reward
+        </button>
+      )}
+
+      <div
+        className="relative bg-white dark:bg-slate-800 p-3 rounded-2xl shadow-inner border-4 border-ice-100 dark:border-slate-700 touch-none"
+        onTouchMove={handleTouchMove}
+      >
+        {/* SVG Overlay for Lines */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none z-20"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          {foundPaths.map((path, i) => (
+            <path
+              key={i}
+              d={getPathD(path)}
+              stroke="rgba(186, 230, 253, 0.6)"
+              strokeWidth="1.5"
+              fill="none"
+              className="dark:stroke-slate-600"
+            />
+          ))}
+          <path
+            d={getPathD(selection)}
+            stroke="rgba(244, 63, 94, 0.5)"
+            strokeWidth="1.5"
+            fill="none"
+          />
+        </svg>
+
+        <div
+          className="grid gap-2 relative z-10"
+          style={{ gridTemplateColumns: `repeat(${numCols}, minmax(0, 1fr))` }}
+        >
+          {grid.map((row, r) =>
+            row.map((char, c) => {
+              const isSelected = selection.some((s) => s.r === r && s.c === c);
+              const isFound = foundPaths.some((path) =>
+                path.some((p) => p.r === r && p.c === c),
+              );
+              let cls =
+                "w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center font-bold text-lg sm:text-xl rounded-full select-none cursor-pointer transition-all duration-200 ";
+
+              if (isSelected)
+                cls +=
+                  "bg-cozy-500 text-white scale-110 shadow-lg ring-2 ring-cozy-200";
+              else if (isFound)
+                cls +=
+                  "bg-ice-200 dark:bg-ice-800 text-ice-800 dark:text-ice-200";
+              else
+                cls +=
+                  "bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-600";
+
+              return (
+                <div
+                  key={`${r}-${c}`}
+                  data-r={r}
+                  data-c={c}
+                  className={cls}
+                  onMouseDown={() => handleStart(r, c)}
+                  onMouseEnter={() => handleEnter(r, c)}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    handleStart(r, c);
+                  }}
+                >
+                  {char}
+                </div>
+              );
+            }),
+          )}
+        </div>
+      </div>
+
+      <div className="mt-6 flex flex-wrap gap-2 justify-center max-w-sm">
+        {placedWords.map((w) => {
+          const isFound = foundWords.includes(w);
+          const isHinted = hintedWords.includes(w);
+          if (!isFound && !isHinted) return null;
+          return (
+            <span
+              key={w}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all animate-fade-in ${
+                isFound
+                  ? "bg-ice-500 text-pink border-ice-500 shadow-md"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-500 border-gray-200 dark:border-slate-600 border-dashed"
+              }`}
+            >
+              {w}
+            </span>
+          );
+        })}
+      </div>
+
+      {foundWords.length < placedWords.length && (
+        <button
+          onClick={handleHint}
+          className="mt-8 text-xs font-bold text-cozy-400 hover:text-cozy-600 underline decoration-dashed underline-offset-4"
+        >
+          Need a hint? ({placedWords.length - foundWords.length} remaining)
+        </button>
+      )}
+    </div>
+  );
+};
+
+/* =========================================
     MODULE: HOME & APP
     ========================================= */
 
@@ -1200,6 +1604,35 @@ function App() {
           {currentConfig[activeGameIndex].type === "PURBLE" && (
             <PurbleMatch
               target={currentConfig[activeGameIndex].target}
+              reward={currentConfig[activeGameIndex].reward}
+              initialState={progress[`${edition}_${activeGameIndex}`]}
+              onSave={(data) =>
+                saveGameProgress(`${edition}_${activeGameIndex}`, data)
+              }
+              onComplete={() =>
+                handleGameComplete(`${edition}_${activeGameIndex}`)
+              }
+            />
+          )}
+          {currentConfig[activeGameIndex].type === "BEE" && (
+            <SpellingBee
+              center={currentConfig[activeGameIndex].center}
+              letters={currentConfig[activeGameIndex].letters}
+              msg={currentConfig[activeGameIndex].msg}
+              reward={currentConfig[activeGameIndex].reward}
+              initialState={progress[`${edition}_${activeGameIndex}`]}
+              onSave={(data) =>
+                saveGameProgress(`${edition}_${activeGameIndex}`, data)
+              }
+              onComplete={() =>
+                handleGameComplete(`${edition}_${activeGameIndex}`)
+              }
+            />
+          )}
+          {currentConfig[activeGameIndex].type === "STRANDS" && (
+            <Strands
+              theme={currentConfig[activeGameIndex].theme}
+              file={currentConfig[activeGameIndex].file}
               reward={currentConfig[activeGameIndex].reward}
               initialState={progress[`${edition}_${activeGameIndex}`]}
               onSave={(data) =>

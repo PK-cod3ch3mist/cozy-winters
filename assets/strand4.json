@@ -1,0 +1,21 @@
+{
+  "words": [
+    "AFFIRM",
+    "GIFTING",
+    "QUALITYTIME",
+    "TOUCH",
+    "SERVICE",
+    "RIYA",
+    "PRATYUSH"
+  ],
+  "grid": [
+    ["A", "F", "I", "T", "Y", "T"],
+    ["F", "I", "L", "O", "U", "I"],
+    ["M", "R", "A", "T", "C", "M"],
+    ["Q", "U", "S", "E", "H", "E"],
+    ["C", "I", "V", "R", "A", "Y"],
+    ["E", "P", "R", "G", "R", "I"],
+    ["Y", "T", "A", "G", "N", "I"],
+    ["U", "S", "H", "I", "F", "T"]
+  ]
+}

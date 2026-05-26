@@ -57,6 +57,7 @@ const USER_WORDS = [
   "SAREE",
   "EXCEL",
   "DUNKS",
+  "PUMPS",
 ];
 
 const WINTER_CONFIG = [
@@ -295,6 +296,38 @@ const SUMMER_CONFIG = [
     title: "Lemonade: Riya Jain",
     target: "TEMPLE",
     hint: "Auspicious start?",
+  },
+  {
+    date: "2026-05-28",
+    type: "WORDLE",
+    title: "Wordle: Tarantino",
+    target: "PUMPS",
+    hint: "Black bone earth red",
+    reward: "assets/summer8.mp4",
+  },
+  {
+    date: "2026-05-29",
+    type: "STRANDS",
+    title: "Strands: Love",
+    theme: "Love",
+    file: "assets/strand4.json",
+    reward: "assets/strand4.jpg",
+  },
+  {
+    date: "2026-05-30",
+    type: "WORDLE",
+    title: "Wordle: Games",
+    target: "CARDS",
+    hint: "Off with the clothes",
+    reward: "assets/summer9.mp4",
+  },
+  {
+    date: "2026-05-31",
+    type: "WORDLE",
+    title: "Wordle: I miss you",
+    target: "CAMEL",
+    hint: "cutu, girl, baby,...",
+    reward: "assets/summer10.mp4",
   },
 ];
 

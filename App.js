@@ -327,7 +327,7 @@ const SUMMER_CONFIG = [
     title: "Wordle: I miss you",
     target: "CAMEL",
     hint: "cutu, girl, baby,...",
-    reward: "assets/summer10.mp4",
+    reward: "assets/summer10.png",
   },
 ];
 

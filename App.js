@@ -329,6 +329,14 @@ const SUMMER_CONFIG = [
     hint: "cutu, girl, baby,...",
     reward: "assets/summer10.png",
   },
+  {
+    date: "2026-06-14",
+    type: "STRANDS",
+    title: "Strands: Dating to 8 and more",
+    theme: "It's a date!",
+    file: "assets/strand5.json",
+    reward: "assets/summerfin.mp4",
+  },
 ];
 
 /* =========================================

@@ -1,0 +1,20 @@
+{
+  "words": [
+    "POSCAMUGS",
+    "VIKRANT",
+    "JAINTEMPLE",
+    "BLANKETFORT",
+    "PIZZA",
+    "DELISH",
+  ],
+  "grid": [
+    ["A", "N", "K", "E", "T", "F"],
+    ["L", "V", "H", "I", "L", "O"],
+    ["B", "I", "L", "S", "E", "R"],
+    ["R", "K", "E", "P", "D", "T"],
+    ["A", "N", "T", "T", "M", "P"],
+    ["I", "P", "J", "N", "E", "O"],
+    ["Z", "Z", "A", "I", "S", "C"],
+    ["A", "S", "G", "U", "M", "A"]
+  ]
+}
